@@ -1,0 +1,126 @@
+{% if section.settings.show_animated_icons %}
+<div class="animatediconstext" style="margin:0 auto; padding:10px 0px 25px 0px;">
+  <div class="grid grid--uniform grid--flush-bottom">
+    <div class="grid__item medium-up--one-third text-center aos-init aos-animate" data-aos="row-of-3">
+      <div class="innerdiv_image" style="margin: 0 auto; max-width: 50px;">
+        <div class="image-wrap text-spacing">
+          <img src="https://cdn.shopify.com/s/files/1/0759/0379/5515/files/ICONOmarcassudorMOVIMIENTO_1.gif?v=1714044230">
+        </div>
+      </div> 
+      <div class="innerdiv_text">
+        <h1>{{ section.settings.animated_sec_title1 }}</h1>
+        <div class="innertextdiv rte-setting text-spacing">{{ section.settings.animated_sec_text1 }}</div>
+      </div>
+    </div>
+    <div class="grid__item medium-up--one-third text-center aos-init aos-animate" data-aos="row-of-3">
+      <div class="innerdiv_image" style="margin: 0 auto; max-width: 50px;">
+        <div class="image-wrap text-spacing">
+          <img src="https://cdn.shopify.com/s/files/1/0759/0379/5515/files/ICONOplanchaMOVIMIENTO_99b35b74-3749-4140-89fd-456ee3fb3ffe_1.gif?v=1714044230">
+        </div>      
+      </div> 
+      <div class="innerdiv_text">
+        <h1>{{ section.settings.animated_sec_title2 }}</h1>    
+        <div class="innertextdiv rte-setting text-spacing">{{ section.settings.animated_sec_text2 }}</div>
+      </div>
+    </div>
+    <div class="grid__item medium-up--one-third text-center aos-init aos-animate" data-aos="row-of-3">
+      <div class="innerdiv_image" style="margin: 0 auto; max-width: 50px;">
+        <div class="image-wrap text-spacing">
+          <img src="https://cdn.shopify.com/s/files/1/0759/0379/5515/files/ICONOtranspirableMOVIMIENTo_1.gif?v=1714044230">
+        </div>      
+      </div>  
+      <div class="innerdiv_text">
+        <h1>{{ section.settings.animated_sec_title3 }}</h1>
+        <div class="innertextdiv rte-setting text-spacing">{{ section.settings.animated_sec_text3 }}</div>
+      </div>
+    </div>
+    <div class="grid__item medium-up--one-third text-center aos-init aos-animate" data-aos="row-of-3">
+      <div class="innerdiv_image" style="margin: 0 auto; max-width: 50px;">
+        <div class="image-wrap text-spacing">
+          <img src="https://cdn.shopify.com/s/files/1/0759/0379/5515/files/ICONOantibacterianoMOVIMIENTO_4bf8d0c1-004d-40b2-a61e-bbea89b26faf_1.gif?v=1714044230">
+        </div>      
+      </div>    
+      <div class="innerdiv_text">
+        <h1>{{ section.settings.animated_sec_title4 }}</h1>
+        <div class="innertextdiv rte-setting text-spacing">{{ section.settings.animated_sec_text4 }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% schema %}
+{
+  "name": "Product Qualities",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+        "type": "checkbox",
+        "id": "show_animated_icons",
+        "label": "Show Animated Icons?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_title1",
+        "label": "Box 1: Title"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_text1",
+        "label": "Box 1: Text"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_title2",
+        "label": "Box 2: Title"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_text2",
+        "label": "Box 2: Text"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_title3",
+        "label": "Box 3: Title"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_text3",
+        "label": "Box 3: Text"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_title4",
+        "label": "Box 4: Title"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_text4",
+        "label": "Box 4: Text"
+      }
+  ],
+  "presets": [
+    {
+      "name": "Product Qualities"
+    }
+  ]
+}
+{% endschema %}
+

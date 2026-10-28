@@ -1,0 +1,46 @@
+<div class="cus-texbox" style="background-color: {{ section.settings.PinkBox_Background }}; color: {{ section.settings.PinkBox_TextColor }};">
+  <h2>
+    {{ section.settings.PinkBox_Heading }}
+  </h2>
+  <p>
+    {{ section.settings.PinkBox_Content }}
+  </p>
+</div>
+
+
+
+
+{% schema %}
+{
+  "name": "Cus Pink Box",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+      {
+        "type": "color",
+        "id": "PinkBox_Background",
+        "label": "Background Color"
+      },
+      {
+        "type": "color",
+        "id": "PinkBox_TextColor",
+        "label": "Text Color"
+      },
+      {
+        "type": "text",
+        "id": "PinkBox_Heading",
+        "label": "Heading"
+      },
+      {
+        "type": "text",
+        "id": "PinkBox_Content",
+        "label": "Content"
+      }
+  ],
+  "presets": [
+    {
+      "name": "Cus Pink Box"
+    }
+  ]
+}
+{% endschema %}

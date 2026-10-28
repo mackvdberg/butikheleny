@@ -1,0 +1,170 @@
+<html lang="en">
+<head>
+  <title>Bootstrap 5 Example</title>
+  
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" defer />
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js" defer></script>
+  <style>
+    
+  </style>
+</head>
+<body> 
+  <div class="container mt-5">
+    <div id="aniated-icons-slider" class="row" style="margin:60px auto;">
+      <div>
+        <div class="custom_slider_AnimatedIcons">
+          <div class="card mx-2">
+            <div class="grid__item text-center aos-init aos-animate" data-aos="row-of-3">
+              <div style="margin: 0 auto; max-width: 60px;">
+                <div class="image-wrap text-spacing" style="height: 0; padding-bottom: 100.0%;">
+                  <img class="image-animated" src="{{ section.settings.animated_sec_img1 | image_url }}">
+                </div>
+                
+              </div> 
+              <h3>{{ section.settings.animated_sec_title1 }}</h3>
+              <p>{{ section.settings.animated_sec_text1 }}</p>
+            </div>
+          </div>
+          <div class="card mx-2">
+            <div class="grid__item text-center aos-init aos-animate" data-aos="row-of-3">
+              <div style="margin: 0 auto; max-width: 60px;">
+                <div class="image-wrap text-spacing" style="height: 0; padding-bottom: 100.0%;">
+                  <img class="image-animated" src="{{ section.settings.animated_sec_img2 | image_url }}">
+                </div>      
+              </div>   
+              <h3>{{ section.settings.animated_sec_title2 }}</h3>    
+              <p>{{ section.settings.animated_sec_text2 }}</p>
+            </div>
+          </div>
+          <div class="card mx-2">
+            <div class="grid__item text-center aos-init aos-animate" data-aos="row-of-3">
+              <div style="margin: 0 auto; max-width: 60px;">
+                <div class="image-wrap text-spacing" style="height: 0; padding-bottom: 100.0%;">
+                 <img class="image-animated" src="{{ section.settings.animated_sec_img3 | image_url }}">
+                </div>      
+              </div>    
+              <h3>{{ section.settings.animated_sec_title3 }}</h3>
+              <p>{{ section.settings.animated_sec_text3 }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+
+
+<script>
+  $(document).ready(function () {
+    $('.custom_slider_AnimatedIcons').slick({
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      speed: 600,
+      infinite: true,
+      autoplaySpeed: 5000,
+      autoplay: false,
+      centerMode: false,
+      responsive: [
+        {
+          breakpoint: 767,
+          settings: {
+            slidesToShow: 1,
+            centerMode: false,
+            dots: true,
+          }
+        }
+      ]
+    });
+  });
+</script>
+
+</html>
+
+
+
+
+
+
+
+
+{% schema %}
+{
+  "name": "Animated Icons Slider",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+      {
+        "type": "image_picker",
+        "id": "animated_sec_img1",
+        "label": "Slide 1: Image"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_title1",
+        "label": "Slide 1: Title"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_text1",
+        "label": "Slide 1: Content"
+      },
+      {
+        "type": "image_picker",
+        "id": "animated_sec_img2",
+        "label": "Slide 2: Image"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_title2",
+        "label": "Slide 2: Title"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_text2",
+        "label": "Slide 2: Content"
+      },
+      {
+        "type": "image_picker",
+        "id": "animated_sec_img3",
+        "label": "Slide 3: Image"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_title3",
+        "label": "Slide 3: Title"
+      },
+      {
+        "type": "text",
+        "id": "animated_sec_text3",
+        "label": "Slide 3: Content"
+      }
+  ],
+  "presets": [
+    {
+      "name": "Animated Icons Slider"
+    }
+  ]
+}
+{% endschema %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

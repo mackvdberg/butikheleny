@@ -1,0 +1,1063 @@
+{%- liquid
+  assign main_menu = linklists[section.settings.main_menu_link_list]
+  assign toolbar_menu = linklists[section.settings.toolbar_menu]
+
+  assign logo_alignment = 'left'
+  if section.settings.main_menu_alignment == 'center-left' or section.settings.main_menu_alignment == 'center-split' or section.settings.main_menu_alignment == 'center' or section.settings.main_menu_alignment == 'center-drawer'
+    assign logo_alignment = 'center'
+  endif
+
+  assign dropdown_alignment = 'left'
+  if section.settings.main_menu_alignment == 'left-center' or section.settings.main_menu_alignment == 'center-split' or section.settings.main_menu_alignment == 'center'
+    assign dropdown_alignment = 'center'
+  endif
+
+  assign template_name = template | replace: '.', ' ' | truncatewords: 2, '' | handle
+
+  assign sticky_header = false
+  if section.settings.header_style == 'sticky'
+    assign sticky_header = true
+  endif
+  assign overlay_header = false
+  if template_name == 'index' and section.settings.sticky_index
+    assign overlay_header = true
+  endif
+  if template_name == 'collection' and collection.image and section.settings.sticky_collection
+    assign overlay_header = true
+  endif
+-%}
+
+{%- render 'drawer-menu',
+  section: section,
+  main_menu: main_menu,
+  toolbar_menu: toolbar_menu,
+  logo_alignment: logo_alignment
+-%}
+{%- render 'cart-drawer' -%}
+
+<style>
+  .UpcartDesignSettings__cartSavingsTextColor{
+    font-weight:400 !important;
+  }
+  .site-nav__link,
+  .site-nav__dropdown-link:not(.site-nav__dropdown-link--top-level) {
+    font-size: {{ settings.type_navigation_size }}px;
+  }
+  {% if settings.type_navigation_capitalize %}
+    .site-nav__link, .mobile-nav__link--top-level {
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+    .mobile-nav__link--top-level {
+      font-size: 1.1em;
+    }
+  {% endif %}
+
+  {% if mainmenu.length > 6 %}
+    .site-nav__link {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  {% endif %}
+
+  {% unless section.settings.mega_menu_images %}
+    .megamenu__colection-image {
+      display: none;
+    }
+  {% endunless %}
+
+  {%- if settings.color_header == settings.color_body_bg or settings.color_body_bg contains settings.color_header -%}
+    .site-header {
+      box-shadow: 0 0 1px rgba(0,0,0,0.2);
+    }
+
+    .toolbar + .header-sticky-wrapper .site-header {
+      border-top: 0;
+    }
+  {%- endif -%}
+
+  {%- if settings.color_announcement == settings.color_body_bg -%}
+    .announcement-bar {
+      border-bottom: 1px solid;
+    }
+  {%- endif -%}
+</style>
+
+<div data-section-id="{{ section.id }}" data-section-type="header">
+  {%- if overlay_header or section.settings.announcement_above_header -%}
+    {%- render 'announcement-bar', section: section -%}
+  {%- endif -%}
+
+  {%- unless overlay_header -%}
+    {%- if section.settings.show_locale_selector or section.settings.show_currency_selector or section.settings.toolbar_social or section.settings.toolbar_menu != blank -%}
+      {%- render 'toolbar',
+        section: section,
+        toolbar_menu: toolbar_menu,
+        overlay_header: overlay_header
+      -%}
+    {%- endif -%}
+  {%- endunless -%}
+
+  <div class="header-sticky-wrapper">
+    <div id="HeaderWrapper" class="header-wrapper{% if overlay_header %} header-wrapper--sticky is-light{% endif %}">
+
+      {%- if overlay_header -%}
+        {%- if section.settings.show_locale_selector or section.settings.show_currency_selector or section.settings.toolbar_social or section.settings.toolbar_menu != blank -%}
+          {%- render 'toolbar',
+            section: section,
+            toolbar_menu: toolbar_menu,
+            overlay_header: overlay_header
+          -%}
+        {%- endif -%}
+      {%- endif -%}
+      <header
+        id="SiteHeader"
+        class="site-header{% if settings.type_navigation_style == 'heading' %} site-header--heading-style{% endif %}"
+        data-sticky="{{ sticky_header }}"
+        data-overlay="{{ overlay_header }}">
+        <div class="page-width">
+          <div
+            class="header-layout header-layout--{{ section.settings.main_menu_alignment }}"
+            data-logo-align="{{ logo_alignment }}">
+
+            {%- if logo_alignment == 'left' -%}
+              <div class="header-item header-item--logo">
+                {%- render 'header-logo-block', section: section -%}
+              </div>
+            {%- endif -%}
+
+            {%- if logo_alignment == 'left' and section.settings.main_menu_alignment != 'left-drawer' -%}
+              <div class="header-item header-item--navigation{% if section.settings.main_menu_alignment == 'left-center' %} text-center{% endif %}">
+                {%- render 'header-desktop-nav', main_menu: main_menu, dropdown_alignment: dropdown_alignment -%}
+              </div>
+            {%- endif -%}
+
+            {%- if logo_alignment == 'center' -%}
+              <div class="header-item header-item--left header-item--navigation">
+                {%- if section.settings.main_menu_alignment == 'center' or section.settings.main_menu_alignment == 'center-split' -%}
+                  {%- if settings.search_enable -%}
+                    <div class="site-nav small--hide">
+                      <a href="{{ routes.search_url }}" class="site-nav__link site-nav__link--icon js-search-header">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-search" viewBox="0 0 64 64"><path d="M47.16 28.58A18.58 18.58 0 1 1 28.58 10a18.58 18.58 0 0 1 18.58 18.58zM54 54L41.94 42"/></svg>
+                        <span class="icon__fallback-text">{{ 'general.search.title' | t }}</span>
+                      </a>
+                    </div>
+                  {%- endif -%}
+                {%- endif -%}
+
+                {%- if section.settings.main_menu_alignment == 'center-left' -%}
+                  {%- render 'header-desktop-nav', main_menu: main_menu, dropdown_alignment: dropdown_alignment -%}
+                {%- endif -%}
+
+                <div class="site-nav{% unless section.settings.main_menu_alignment == 'center-drawer' %} medium-up--hide{% endunless %}">
+                  <button
+                    type="button"
+                    class="site-nav__link site-nav__link--icon js-drawer-open-nav"
+                    aria-controls="NavDrawer">
+                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-hamburger" viewBox="0 0 64 64"><path d="M7 15h51M7 32h43M7 49h51"/></svg>
+                    <span class="icon__fallback-text">{{ 'general.drawers.navigation' | t }}</span>
+                  </button>
+                </div>
+              </div>
+
+              {%- if section.settings.main_menu_alignment == 'center-split' -%}
+                {%- render 'header-split-nav', main_menu: main_menu, section: section, dropdown_alignment: dropdown_alignment -%}
+              {%- endif -%}
+
+              {%- if section.settings.main_menu_alignment != 'center-split' -%}
+                <div class="header-item header-item--logo">
+                  {%- render 'header-logo-block', section: section -%}
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+
+            <div class="header-item header-item--icons">
+              {%- render 'header-icons', section: section -%}
+            </div>
+          </div>
+
+          {%- if section.settings.main_menu_alignment == 'center' -%}
+            <div class="text-center">
+              {%- render 'header-desktop-nav', main_menu: main_menu, dropdown_alignment: dropdown_alignment -%}
+            </div>
+          {%- endif -%}
+        </div>
+        <div class="site-header__search-container">
+          <div class="site-header__search">
+            <div class="page-width">
+              <form action="{{ routes.search_url }}" method="get" role="search"
+                id="HeaderSearchForm"
+                class="site-header__search-form">
+                <input type="hidden" name="type" value="{{ settings.search_type }}">
+                <input type="hidden" name="options[prefix]" value="last">
+                <button type="submit" class="text-link site-header__search-btn site-header__search-btn--submit">
+                  <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-search" viewBox="0 0 64 64"><path d="M47.16 28.58A18.58 18.58 0 1 1 28.58 10a18.58 18.58 0 0 1 18.58 18.58zM54 54L41.94 42"/></svg>
+                  <span class="icon__fallback-text">{{ 'general.search.submit' | t }}</span>
+                </button>
+                <input type="search" name="q" value="{{ search.terms | escape | replace: '*', '' }}" placeholder="{{ 'general.search.placeholder' | t }}" class="site-header__search-input" aria-label="{{ 'general.search.placeholder' | t }}">
+              </form>
+              <button type="button" id="SearchClose" class="js-search-header-close text-link site-header__search-btn">
+                <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close" viewBox="0 0 64 64"><path d="M19 17.61l27.12 27.13m0-27.12L19 44.74"/></svg>
+                <span class="icon__fallback-text">{{ 'general.accessibility.close_modal' | t | json }}</span>
+              </button>
+            </div>
+          </div>
+          {%- if settings.predictive_search_enabled -%}
+            <div id="PredictiveWrapper" class="predictive-results hide" data-image-size="{{ settings.predictive_image_size }}">
+              <div class="page-width">
+                <div id="PredictiveResults" class="predictive-result__layout"></div>
+                <div class="text-center predictive-results__footer">
+                  <button type="button" class="btn btn--small" data-predictive-search-button>
+                    <small>
+                      {{ 'general.search.view_more' | t }}
+                    </small>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </header>
+    </div>
+  </div>
+
+  {%- unless overlay_header or section.settings.announcement_above_header -%}
+    {%- render 'announcement-bar', section: section -%}
+  {%- endunless -%}
+</div>
+
+<style>
+  .styles_CustomButton__ > a {
+    text-transform: uppercase !important;
+  }
+  .toolbar.small--hide{
+    display: none !important;
+  }
+  
+  b{
+    font-weight: 600 !important;
+  }
+  .variant-input-wrap input[type=radio]:checked+label.ImageVariant {
+    box-shadow: 0 0 0 2px #000;
+    box-shadow: 0 0 0 2px var(--colorTextBody);
+    border: 2px solid #FFFFFF !important;
+  }
+  label .ks-calculator-container, label .ks-chart-container{
+    margin: 0px !important;
+  }
+  
+  .variant-input-wrap input[type=radio]:checked+label{
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+  }
+  [data-center-text=true] .variant-input-wrap label{
+    padding: 4px 18px;
+  }
+  @media only screen and (min-width: 769px) {
+    .product-single__meta {
+      padding-left: 20px !important;
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    .grid__item {
+        padding-left: 15px !important;
+    }
+  }
+  
+  .product-single__meta .product-single__title{
+    font-weight: 400 !important;
+  }
+  .footer__title{
+    font-weight: 700 !important;
+  }
+  body{
+    overflow-x: hidden !important;
+  }
+  #CollectionHeaderSection .collection-hero__content .section-header__title{
+    display: none !important;
+  }
+  .collection-hero {
+    height: auto !important;
+  }
+  .rte.collection__description {
+    max-width: 750px !important;
+    margin: 0 auto !important;
+  }
+  .rte.collection__description p{
+    font-size: 15px !important;
+  }
+  .announcement-bar{
+    background-color: {{ settings.color_announcement }} !important;
+    color: {{ settings.color_announcement_text }} !important;
+  }
+  .site-nav__icons .site-nav__link.site-nav__link--icon.small--hide{
+    display:none !important;  
+  }
+  /* .shopify-section.index-section .section-header__title{
+    text-align:left !important;
+  } */
+  .site-footer .footer__item--1494292487693 p, .site-footer .footer__item--1494292487693 form{
+    text-align:center !important;
+  }
+  #SaleProductGrid{
+    color: #1c1d1d !important;
+  }
+  #SaleProductGrid .grid-product__price--original{
+    color: #1c1d1d !important;
+  }
+  
+  #shopify-section-template--23375954510089__advanced_content_MVFtkT .custom-content{
+    background-color: #fceadc !important;
+  }
+  #shopify-section-template--23375954510089__advanced_content_MVFtkT .custom-content .custom__item:nth-child(2){
+    margin: 0px !important;
+    padding: 0px !important;
+    display: flex !important;
+  }
+  @media only screen and (max-width: 768px) {
+    #shopify-section-template--23375954510089__advanced_content_MVFtkT .custom-content{
+        margin: 25px 20px !important;
+    }
+    #shopify-section-template--23375954510089__advanced_content_MVFtkT .page-width{
+      padding: 0px !important;
+    }
+    #shopify-section-template--23375954510089__advanced_content_MVFtkT .custom-content .rte{
+      padding: 40px 25px 25px 10px !important;
+    }
+    #shopify-section-template--23375954510089__advanced_content_MVFtkT .custom-content{
+      flex-direction: column-reverse !important;
+    }
+  }
+  
+  .section-template--24468822262098__ss_parallax_banner_KRcbzz a{
+    border-radius: 0px !important;
+  }
+  @media only screen and (max-width: 768px) {
+    .product-single__meta {
+        text-align: left !important;
+    }
+  }
+  .product-single__meta .product-block--price{
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .product-single__meta .product__price--compare{
+    font-size: 20px !important;
+    color: #000000 !important;
+  }
+  .product-single__meta .on-sale{
+    font-weight: 900 !important;
+    font-size: 25px !important;
+    margin: 0px !important;
+    color: {{ settings.Color_SalePrice }} !important;
+  }
+  .product-single__meta .product__price-savings{
+        white-space: nowrap !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 18px !important;
+  }
+  .product-single__meta .add-to-cart{
+    background-color: {{ settings.Color_ATC }} !important;
+    box-shadow: #00000059 0 5px 15px;
+  }
+  .product-single__meta .product-block--header{
+    margin-bottom: 10px !important;
+  }
+
+
+
+
+
+  #aniated-icons-slider .grid__item{
+    padding:0px;
+  }
+  #aniated-icons-slider .card{
+    background-color:#FFFFFF !important;
+    padding: 0px 25px !important;
+  }
+  #aniated-icons-slider .image-animated{
+    width:60px;
+    opacity: 1 !important;
+  }
+  #aniated-icons-slider h3{
+    margin: 10px 0px !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: #000000 !important;
+  }
+  #aniated-icons-slider p{
+    color: #000000 !important;
+    font-size: 14px !important;
+  }
+  #aniated-icons-slider .slick-arrow{
+    display:none !important
+  }
+  #aniated-icons-slider .slick-dots{
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin:0px !important;
+  }
+  #aniated-icons-slider .slick-dots li{
+    border-radius: 100%;
+    display: block;
+    background-color: #d5d5d5;
+    color: transparent;
+    width: 8px;
+    height: 8px;
+  }
+  #aniated-icons-slider .slick-dots li.slick-active{
+    background-color: #1C1C1C;
+    color: transparent;
+  }
+
+
+
+
+
+
+
+
+
+  .custum_iconstext .grid .grid__item h3{
+    font-size: 17px;
+    font-weight: 700;
+    margin: 25px 0px 10px 0px;
+  }
+  .custum_iconstext img{
+    max-width:140px !important;
+    opacity: 1 !important;
+    height:70px !important;
+    margin: 0 auto;
+  }
+  .custum_iconstext .rte-setting{
+    font-size: 16px;
+  }
+  @media screen and (max-width: 767px){
+    .custum_iconstext .grid{
+      margin:0px;
+    }
+    .custum_iconstext .grid .grid__item{
+      width: 48% !important;
+      max-width: 48% !important;
+      margin-bottom: 5px;
+    }
+    .custum_iconstext .grid .grid__item{
+      text-align:center !important;
+      padding:14px;
+    }
+  }
+  @media screen and (min-width: 768px){
+    .custum_iconstext .grid{
+      margin:0px;
+    }
+    .custum_iconstext .grid .grid__item{
+      text-align:center !important;
+      padding:15px;
+    }
+    .custum_iconstext .grid .grid__item{
+      width: 50% !important;
+      max-width: 50% !important;
+      margin-bottom: 10px;
+    }
+  }
+
+
+
+
+
+
+
+
+  .animatediconstext .grid .grid__item{
+    padding:15px 15px 15px 30px !important;
+  }
+  .animatediconstext .image-wrap.text-spacing{
+    height: 0 !important;
+    padding-bottom: 100.0% !important;
+    background:transparent !important;
+    width:60px;
+  }
+  .animatediconstext img{
+    width:60px !important;
+    opacity: 1 !important;
+  }
+  @media screen and (max-width: 920px){
+    .animatediconstext .grid .grid__item{
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-bottom: 10px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px;
+    }
+    .innerdiv_image{
+      margin:0px 10px 0px 0px !important;
+    }
+    .innerdiv_text{
+      text-align:left !important;
+    }
+    .animatediconstext .grid .grid__item h1{
+      font-size: 15px !important;
+      font-weight: 900 !important;
+      margin: 5px 0px !important;
+      text-align: left;
+    }
+    .animatediconstext .innertextdiv{
+      font-size:15px !important;
+      line-height: 16px;
+      text-align: left;
+    }
+  }
+  @media screen and (min-width: 921px){
+    .animatediconstext .grid .grid__item{
+      width: 25% !important;
+      max-width: 25% !important;
+      margin-bottom: 0px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px;
+      flex-direction: column;
+    }
+    .animatediconstext .grid{
+      display:flex !important;
+      gap:0px;
+    }
+    .animatediconstext .grid .grid__item h1{
+      font-size: 15px !important;
+      font-weight: 900 !important;
+      margin: 5px 0px !important;
+      text-align: center;
+    }
+    .animatediconstext .innertextdiv{
+      font-size:15px !important;
+      line-height: 16px;
+      text-align: center;
+    }
+  }
+
+
+
+
+
+
+  #BlinkingIcon_Stock{
+      margin: 0px;
+      line-height: 28px;
+      color: {{ settings.blinkstock_TextColor }} !important;
+      display: flex;
+      align-items: center !important;
+    }
+    #BlinkingIcon_Stock .icon {
+      position: relative;
+      display: inline-block;
+      vertical-align: text-bottom;
+    }
+    #BlinkingIcon_Stock .icon img {
+      width: 12px;
+      margin: 0px 0px 2px 6px;
+      visibility:hidden;
+    }
+    #BlinkingIcon_Stock .icon{
+    background-color:{{ settings.blinkstock_IconColor }};
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0px 12px 0px 6px;
+    left: 0px;
+  }
+  #BlinkingIcon_Stock .icon::before {
+    content: " ";
+    background-color: {{ settings.blinkstock_IconColor }};
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    margin: 0 auto;
+    transition: all 0.5s;
+    animation: mymove 2s infinite;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+  }
+  @keyframes mymove {
+    0% {
+        transform: scale(.35);
+        box-shadow: 0 0 {{ settings.blinkstock_IconColor }};
+        opacity: 0.4;
+    }
+    70%{
+      transform: scale(.35);
+      box-shadow: 0 0 0 10px {{ settings.blinkstock_IconColor }};
+      opacity: 0.4;
+    }
+    100%{
+        transform: scale(.35);
+        box-shadow: 0 0 {{ settings.blinkstock_IconColor }};
+        opacity: 0.4;
+    }
+  }
+  .Blinkingtext_Stock{
+    display: inline-block;
+    vertical-align: super;
+    margin-left: 7px;
+  }
+
+
+
+
+
+  .red-div {
+    padding: 6px 5px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 20px auto;
+    background-color: #f9eaea;
+  }
+  .text {
+    color: #AD0000;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+
+
+
+
+  .gua-inner{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  .gua-img-div{
+    width: 25px;
+    max-width: 25px;
+    display: flex;
+    justify-content: center;
+  }
+
+
+
+
+
+
+  .banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 8px 10px; /* Increased padding */
+    border: 2px solid #e0e0e0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    flex-wrap: nowrap; /* Prevent stacking */
+    margin: 10px 0px 15px 0px !important;
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Increased gap */
+  }
+  .status .dot {
+    width: 11px; /* Larger dot */
+    height: 11px; /* Larger dot */
+    background-color: #4CAF50;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #4CAF50;
+  }
+  .status .text {
+    font-size: 15px; /* Larger font */
+    color: #333;
+    font-weight: bold;
+    white-space: nowrap; /* Prevent wrapping */
+  }
+  .shipping {
+    display: flex;
+    align-items: center;
+    gap: 3px; /* Increased gap */
+    white-space: nowrap; /* Prevent wrapping */
+  }
+  .shipping img {
+    height: 16px; /* Larger image */
+    width: auto;
+  }
+  .status .text h2, .shipping .text h2{
+    font-size: 12px; /* Larger font */
+    color: #333;
+    font-weight: bold;
+    margin: 0px !important;
+  }
+  @media (max-width: 600px) {
+    .banner {
+      padding: 7px; /* Reduce padding for mobile */
+    }
+    .status .text h2, .shipping .text h2{
+      font-size: 8px; /* Larger font */
+    }
+    .status .dot {
+      width: 8px;
+      height: 8px;
+    }
+    .shipping img {
+      height: 12px;
+    }
+  }
+
+ 
+
+
+
+  .closure-sale-box {
+    background-color: #ffe7eb;
+    padding: 10px;
+    border-left: 5px solid #ff7e8d;
+    text-align: center;
+    max-width: 600px;
+    margin: -25px auto 20px;
+  }
+  .closure-sale-box p {
+    color: #FF0000;
+    font-size: 15px;
+    margin: 0;
+  }
+
+
+
+
+
+
+  .cus-texbox{
+    padding: 30px !important;
+    text-align: center !important;
+    width: 100% !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+  .cus-texbox h2{
+    font-size: 26px !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+  }
+  .cus-texbox p{
+    margin: 15px auto 0 !important;
+    font-size: 18px !important;
+    max-width: 600px !important;
+    line-height: 1.6 !important;
+    font-weight: normal !important;
+  }
+
+
+
+
+
+
+  .d-main-2-cards-cta p.d-card-text {
+    margin-bottom: 15px !important;
+    margin-top: 15px !important;
+    font-size: 17px !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+  }
+  .d-main-2-cards-cta .d-2cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 30px 18px !important;
+  }
+  .d-main-2-cards-cta .d-card-item {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    height: 690px !important;
+    padding: 15px !important;
+  }
+  .d-main-2-cards-cta .d-card-link {
+    text-decoration: none;
+    background-color: transparent !important;
+    color: #ffffff !important;
+    padding: 12px 15px !important;
+    font-weight: 400;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+    line-height: 18px !important;
+    letter-spacing: 0.3em !important;
+    font-size: 14px !important;
+    border: 2px solid #ffffff !important;
+  }
+  .d-main-2-cards-cta .d-card-link:hover {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #000000 !important;
+  }
+  .d-main-2-cards-cta .d-card-title {
+      font-size: 14px !important;
+  }
+  .d-main-2-cards-cta .card-inner-div-border {
+    padding: 15px !important;
+    border: 3px solid #ffffff !important;
+    height: 100% !important;
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex;
+    flex-direction: column !important;
+  }
+  .d-main-2-cards-cta p.d-card-text-heading {
+    margin-bottom: 0px !important;
+    font-size: 35px !important;
+    text-transform: uppercase !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    line-height: 42px !important;
+    text-align: center !important;
+  }
+ @media screen and (max-width: 1024px) and (min-width: 768px) {
+    .d-main-2-cards-cta .d-2cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 0px;
+    }
+  }
+  @media screen and (max-width: 767px){
+    .d-main-2-cards-cta .d-2cards-grid {
+      grid-template-columns: repeat(1, 2fr) !important;
+      gap: 15px;
+    }
+    .d-main-2-cards-cta .d-card-item{
+      height: 415px !important;
+      padding: 8px !important;
+    }
+    .d-main-2-cards-cta .d-card-title {
+      font-size: 13px !important;
+    }
+    .d-main-2-cards-cta p.d-card-text-heading{
+      font-size: 25px !important;
+      line-height: 29px !important;
+      margin-top: 0px !important;
+    }
+    .d-main-2-cards-cta .d-2cards-grid{
+      padding: 8px !important;
+    }
+    .d-main-2-cards-cta p.d-card-text {
+      margin-bottom: 12px !important;
+      margin-top: 12px !important;
+      font-size: 15px !important;
+    }
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "main_menu_link_list",
+        "label": "Navigation",
+        "default": "main-menu"
+      },
+      {
+        "type": "checkbox",
+        "id": "mega_menu_images",
+        "label": "Show mega menu images",
+        "default": true,
+        "info": "[How to create a mega menu](https://archetypethemes.co/blogs/impulse/how-do-i-create-a-mega-menu)"
+      },
+      {
+        "type": "select",
+        "id": "main_menu_alignment",
+        "label": "Header layout",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Logo left, menu left"
+          },
+          {
+            "value": "left-center",
+            "label": "Logo left, menu center"
+          },
+          {
+            "value": "left-drawer",
+            "label": "Logo left, menu drawer"
+          },
+          {
+            "value": "center-left",
+            "label": "Logo center, menu left"
+          },
+          {
+            "value": "center-split",
+            "label": "Logo center, menu split"
+          },
+          {
+            "value": "center",
+            "label": "Logo center, menu below"
+          },
+          {
+            "value": "center-drawer",
+            "label": "Logo center, menu drawer"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "header_style",
+        "label": "Header style",
+        "default": "normal",
+        "options": [
+          {
+            "value": "normal",
+            "label": "Normal"
+          },
+          {
+            "value": "sticky",
+            "label": "Sticky"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "sticky_index",
+        "label": "Overlay header over home page",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "sticky_collection",
+        "label": "Overlay header over collection",
+        "info": "(if collection image is enabled)",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Announcement bar"
+      },
+      {
+        "type": "checkbox",
+        "id": "announcement_compact",
+        "label": "Use compact style"
+      },
+      {
+        "type": "checkbox",
+        "id": "announcement_above_header",
+        "label": "Always show above header"
+      },
+      {
+        "type": "header",
+        "content": "Toolbar"
+      },
+      {
+        "type": "link_list",
+        "id": "toolbar_menu",
+        "label": "Navigation",
+        "info": "This menu won't show dropdown items"
+      },
+      {
+        "type": "checkbox",
+        "id": "toolbar_social",
+        "label": "Show social icons"
+      },
+      {
+        "type": "header",
+        "content": "Language selector",
+        "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_locale_selector",
+        "label": "Show language selector",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Currency selector",
+        "info": "To add a currency, go to your [currency settings.](/admin/settings/payments)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_currency_selector",
+        "label": "Show currency selector",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_currency_flags",
+        "label": "Show currency flags",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "logo",
+        "name": "Logo",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo"
+          },
+          {
+            "type": "image_picker",
+            "id": "logo-inverted",
+            "label": "White logo",
+            "info": "Used when on top of an image"
+          },
+          {
+            "type": "range",
+            "id": "desktop_logo_width",
+            "label": "Desktop logo width",
+            "default": 200,
+            "min": 100,
+            "max": 400,
+            "step": 10,
+            "unit": "px"
+          },
+          {
+            "type": "range",
+            "id": "mobile_logo_width",
+            "label": "Mobile logo width",
+            "default": 140,
+            "min": 60,
+            "max": 200,
+            "step": 10,
+            "unit": "px",
+            "info": "Set as a max-width, may appear smaller"
+          }
+        ]
+      },
+      {
+        "type": "announcement",
+        "name": "Announcement",
+        "limit": 3,
+        "settings": [
+          {
+            "type": "text",
+            "id": "text",
+            "label": "Heading",
+            "default": "Hassle-free returns"
+          },
+          {
+            "type": "text",
+            "id": "link_text",
+            "label": "Text",
+            "default": "30-day postage paid returns"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Link"
+          }
+        ]
+      }
+    ],
+    "default": {
+      "settings": {}
+    }
+  }
+{% endschema %}

@@ -1,0 +1,95 @@
+<div class="d-main-2-cards-cta">
+  <div class="d-2cards-grid">
+    <!-- First Card -->
+    <div class="d-card-item" style="background-image: url('{{ section.settings.image_1 | image_url }}');">
+      <div class="card-inner-div-border">
+      <p class="d-card-text-heading">{{ section.settings.paragraph_text1 }}</p>
+      <p class="d-card-text">{{ section.settings.paragraph_text-below_heading1 }}</p>
+      <a href="{{ section.settings.link_1 }}" class="d-card-link">
+        <span class="d-card-title">{{ section.settings.title_1 }}</span>
+      </a>
+      </div>
+    </div>
+    <!-- Second Card -->
+    <div class="d-card-item" style="background-image: url('{{ section.settings.image_2 | image_url }}');">
+      <div class="card-inner-div-border">
+      <p class="d-card-text-heading">{{ section.settings.paragraph_text2 }}</p>
+      <p class="d-card-text">{{ section.settings.paragraph_text-below_heading2 }}</p>
+      <a href="{{ section.settings.link_2 }}" class="d-card-link">
+        <span class="d-card-title">{{ section.settings.title_2 }}</span>
+      </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+{
+  "name": "2 Cards CTA",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Main Heading"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "text",
+      "id": "paragraph_text1",
+      "label": "Heading 1"
+    },
+    {
+      "type": "text",
+      "id": "paragraph_text-below_heading1",
+      "label": "Paragraph 1"
+    },
+    {
+      "type": "text",
+      "id": "title_1",
+      "label": "Button Text 1"
+    },
+    {
+      "type": "url",
+      "id": "link_1",
+      "label": "Button Link 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "text",
+      "id": "paragraph_text2",
+      "label": "Heading 2"
+    },
+    {
+      "type": "text",
+      "id": "paragraph_text-below_heading2",
+      "label": "Paragraph 2"
+    },
+    {
+      "type": "text",
+      "id": "title_2",
+      "label": "Button Text 2"
+    },
+    {
+      "type": "url",
+      "id": "link_2",
+      "label": "Button Link 2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "2 Cards CTA"
+    }
+  ]
+}
+{% endschema %}

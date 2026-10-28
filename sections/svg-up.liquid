@@ -1,0 +1,142 @@
+{% if section.settings.show_simpleicons %}
+<div class="custum_iconstext" style="max-width:1300px; margin:0 auto; padding:0px 0px 30px 0px;">
+  <div class="grid grid--uniform grid--flush-bottom">
+    <div class="grid__item text-center aos-init aos-animate" data-aos="row-of-3">
+      <div style="margin: 0 auto; max-width: 140px;">
+        <div class="image-wrap text-spacing" style="height: 0; padding-bottom: 70px;">
+          <img src="{{ section.settings.simpleicons_img1 | image_url }}">
+        </div>
+      </div> 
+      <h3>{{ section.settings.simpleicons_title1 }}</h3>
+      <div class="rte-setting text-spacing">{{ section.settings.simpleicons_text1 }}</div>
+    </div>
+    <div class="grid__item text-center aos-init aos-animate" data-aos="row-of-3">
+      <div style="margin: 0 auto; max-width: 140px;">
+        <div class="image-wrap text-spacing" style="height: 0; padding-bottom: 70px;">
+          <img src="{{ section.settings.simpleicons_img2 | image_url }}">
+        </div>      
+      </div>   
+      <h3>{{ section.settings.simpleicons_title2 }}</h3>    
+      <div class="rte-setting text-spacing">{{ section.settings.simpleicons_text2 }}</div>
+    </div>
+    <div class="grid__item text-center aos-init aos-animate" data-aos="row-of-3">
+      <div style="margin: 0 auto; max-width: 140px;">
+        <div class="image-wrap text-spacing" style="height: 0; padding-bottom: 70px;">
+          <img src="{{ section.settings.simpleicons_img3 | image_url }}">
+        </div>      
+      </div>    
+      <h3>{{ section.settings.simpleicons_title3 }}</h3>
+      <div class="rte-setting text-spacing">{{ section.settings.simpleicons_text3 }}</div>    
+    </div>
+    <div class="grid__item text-center aos-init aos-animate" data-aos="row-of-3">
+      <div style="margin: 0 auto; max-width: 140px;">
+        <div class="image-wrap text-spacing" style="height: 0; padding-bottom: 70px;">
+          <img src="{{ section.settings.simpleicons_img4 | image_url }}">
+        </div>      
+      </div>    
+      <h3>{{ section.settings.simpleicons_title4 }}</h3>
+      <div class="rte-setting text-spacing">{{ section.settings.simpleicons_text4 }}</div>    
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+{% schema %}
+{
+  "name": "Shipping Information",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+        "type": "checkbox",
+        "id": "show_simpleicons",
+        "label": "Show Animated icons?",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "simpleicons_img1",
+        "label": "Upload Image"
+      },
+      {
+        "type": "text",
+        "id": "simpleicons_title1",
+        "label": "Block 1 - Title"
+      },
+      {
+        "type": "text",
+        "id": "simpleicons_text1",
+        "label": "Block 1 - body"
+      },
+      {
+        "type": "image_picker",
+        "id": "simpleicons_img2",
+        "label": "Upload Image"
+      },
+      {
+        "type": "text",
+        "id": "simpleicons_title2",
+        "label": "Block 2 - Title"
+      },
+      {
+        "type": "text",
+        "id": "simpleicons_text2",
+        "label": "Block 2 - body"
+      },
+      {
+        "type": "image_picker",
+        "id": "simpleicons_img3",
+        "label": "Upload Image"
+      },
+      {
+        "type": "text",
+        "id": "simpleicons_title3",
+        "label": "Block 3 - Title"
+      },
+      {
+        "type": "text",
+        "id": "simpleicons_text3",
+        "label": "Block 3 - body"
+      },
+      {
+        "type": "image_picker",
+        "id": "simpleicons_img4",
+        "label": "Upload Image"
+      },
+      {
+        "type": "text",
+        "id": "simpleicons_title4",
+        "label": "Block 4 - Title"
+      },
+      {
+        "type": "text",
+        "id": "simpleicons_text4",
+        "label": "Block 4 - body"
+      }
+  ],
+  "presets": [
+    {
+      "name": "Shipping Information"
+    }
+  ]
+}
+{% endschema %}
+
+
+
+
+
