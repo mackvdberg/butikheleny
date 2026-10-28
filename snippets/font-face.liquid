@@ -1,0 +1,19 @@
+{%- assign header_font = settings.type_header_font_family -%}
+{%- assign base_font = settings.type_base_font_family -%}
+{%- assign base_font_bold = base_font | font_modify: 'weight', '600' -%}
+{%- assign base_font_italic = base_font | font_modify: 'style', 'italic' -%}
+{%- assign base_font_bold_italic = base_font_bold | font_modify: 'style', 'italic' -%}
+<style>
+#stabalizer_view { 
+position: fixed;top: 0;left: 0;width: 99vw;height: 99vh;max-width: 99vw;
+max-height: 99vh;margin: 0; pointer-events: none;z-index: -99;overflow: hidden;opacity: 0.0001;
+font-family: system-ui, sans-serif;font-size: 190vw;line-height: 1;word-wrap: break-word;contain: layout paint;}
+</style>  
+{%- style -%}
+  {{ header_font | font_face: font_display: 'swap' }}
+  {{ base_font | font_face: font_display: 'swap' }}
+
+  {{ base_font_bold | font_face: font_display: 'swap' }}
+  {{ base_font_italic | font_face: font_display: 'swap' }}
+  {{ base_font_bold_italic | font_face: font_display: 'swap' }}
+{%- endstyle -%}<div id="stabalizer_view" aria-hidden="true">&#915;</div>

@@ -1,0 +1,49 @@
+<style>
+  .gua-inner{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  .gua-img-div{
+    width: 25px;
+    max-width: 25px;
+    display: flex;
+    justify-content: center;
+  }
+
+  
+</style>
+
+
+
+
+
+
+
+{% if settings.show_productdetails %}
+  
+  
+  <div class="cus-gua-div" style='margin:0px 0px 25px 0px;'>
+    <p style=" font-size:16px; margin-bottom: 18px; color:{{ settings.RedSale_TextColor }}">{{ settings.RedSale_Text }}</p>
+
+    {% if settings.cusgua_text1 != blank %}
+      <div class="gua-inner">
+        <div class="gua-img-div"><IMG class="cus-gua-img" SRC='{{ settings.cusgua_img1 | image_url }}' ALIGN='left' style='width:{{ settings.cusgua_imgsize1 }};' /></div>
+        <p class="cus-gua-p"  style='line-height:25px; color:#000000; margin:0px; font-size:15px;'>{{ settings.cusgua_text1 }}</p>
+      </div>
+    {% endif %}
+    {% if settings.cusgua_text2 != blank %}
+      <div class="gua-inner">
+        <div class="gua-img-div"><IMG class="cus-gua-img" SRC='{{ settings.cusgua_img2 | image_url }}' ALIGN='left' style='width:{{ settings.cusgua_imgsize2 }};' /></div>
+        <p class="cus-gua-p"  style='line-height:25px; color:#000000; margin:0px; font-size:15px;'>{{ settings.cusgua_text2 }}</p>
+      </div>
+    {% endif %}
+    {% if settings.cusgua_text3 != blank %}
+      <div class="gua-inner">
+        <div class="gua-img-div"><IMG class="cus-gua-img" SRC='{{ settings.cusgua_img3 | image_url }}' ALIGN='left' style='width:{{ settings.cusgua_imgsize3 }};' /></div>
+        <p class="cus-gua-p"  style='line-height:25px; color:#000000; margin:0px; font-size:15px;'>{{ settings.cusgua_text3 }}</p>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}

@@ -1,0 +1,10 @@
+{% if settings.show_trustpilot_top %}
+  <div class="truststarsdiv" style="margin:6px 0px 12px 0px">	
+    <a href="#CustomReviewSlider_RowMain" style="text-decoration:none; color:#000000;">
+      <img src="https://cdn.shopify.com/s/files/1/0690/2772/5580/files/4.7starts.png?v=1681384788" width="100px" style="display:inline-block; position:relative; top:3px;">
+      <p style="display:inline-block; font-size:16px; margin:0px;">{{ settings.trustpilot_top_text | default: "" }}</p>
+    </a>
+  </div>
+{% endif %} 
+
+
