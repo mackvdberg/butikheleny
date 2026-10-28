@@ -1,0 +1,412 @@
+{% doc %}
+  @prompt
+    Maak hier custom liquid: <style>
+      .susans-usps {
+        background: #ffffff;
+        padding: 38px 20px 32px;
+      }
+    
+      .susans-usps__grid {
+        max-width: 620px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 90px;
+        row-gap: 72px;
+      }
+    
+      .susans-usps__item {
+        text-align: center;
+      }
+    
+      .susans-usps__icon {
+        width: 94px;
+        height: 94px;
+        border-radius: 50%;
+        margin: 0 auto 10px;
+        background: #183d32;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    
+      .susans-usps__icon svg {
+        width: 42px;
+        height: 42px;
+        stroke: #ffffff;
+        fill: none;
+        stroke-width: 1.45;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    
+      .susans-usps__title {
+        margin: 0;
+        color: #183d32;
+        font-family: "Outfit", sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        letter-spacing: .3px;
+        line-height: 1.2;
+        text-transform: uppercase;
+      }
+    
+      @media screen and (max-width: 749px) {
+        .susans-usps {
+          padding: 28px 12px 26px;
+        }
+    
+        .susans-usps__grid {
+          column-gap: 16px;
+          row-gap: 42px;
+        }
+    
+        .susans-usps__icon {
+          width: 76px;
+          height: 76px;
+          margin-bottom: 9px;
+        }
+    
+        .susans-usps__icon svg {
+          width: 34px;
+          height: 34px;
+        }
+    
+        .susans-usps__title {
+          font-size: 14px;
+          letter-spacing: .2px;
+        }
+      }
+    </style>
+    
+    <div class="susans-usps">
+      <div class="susans-usps__grid">
+    
+        <!-- INSPIRED BY ASPEN -->
+        <div class="susans-usps__item">
+          <div class="susans-usps__icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+    
+              <!-- Rocky Mountain / Colorado inspired -->
+              <path d="M6 47L18 32L24 38L34 21L58 47"/>
+    
+              <!-- rear ridge -->
+              <path d="M11 47L25 34L31 40L40 30L53 47"/>
+    
+              <!-- snow details -->
+              <path d="M30 27L34 21L39 28"/>
+              <path d="M15 36L18 32L21 35"/>
+    
+              <!-- base -->
+              <path d="M8 47H56"/>
+    
+            </svg>
+          </div>
+          <p class="susans-usps__title">Inspired by Aspen</p>
+        </div>
+    
+    
+        <!-- FREE SHIPPING -->
+        <div class="susans-usps__item">
+          <div class="susans-usps__icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+    
+              <!-- speed lines -->
+              <path d="M6 23h15"/>
+              <path d="M4 29h14"/>
+              <path d="M8 35h10"/>
+    
+              <!-- truck -->
+              <path d="M20 18h24v25H20"/>
+              <path d="M44 27h7l7 9v7H44"/>
+    
+              <!-- detail -->
+              <path d="M25 23h13"/>
+    
+              <!-- wheels -->
+              <circle cx="28" cy="46" r="3.5"/>
+              <circle cx="51" cy="46" r="3.5"/>
+    
+            </svg>
+          </div>
+          <p class="susans-usps__title">Free Shipping</p>
+        </div>
+    
+    
+        <!-- EASY 30-DAY RETURNS -->
+        <div class="susans-usps__item">
+          <div class="susans-usps__icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+    
+              <!-- cart handle -->
+              <path d="M8 16h8l5 29h28"/>
+    
+              <!-- basket -->
+              <path d="M19 22h36l-6 20H23z"/>
+    
+              <!-- basket structure -->
+              <path d="M28 22l2 20"/>
+              <path d="M38 22v20"/>
+              <path d="M48 22l-3 20"/>
+    
+              <!-- wheels -->
+              <circle cx="28" cy="50" r="3"/>
+              <circle cx="46" cy="50" r="3"/>
+    
+            </svg>
+          </div>
+          <p class="susans-usps__title">Easy 30-Day Returns</p>
+        </div>
+    
+    
+        <!-- SECURE PAYMENT -->
+        <div class="susans-usps__item">
+          <div class="susans-usps__icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+    
+              <!-- wallet -->
+              <rect x="12" y="22" width="40" height="28" rx="2"/>
+    
+              <!-- cards -->
+              <path d="M18 22l27-8 3 8"/>
+              <path d="M21 22l22-5"/>
+    
+              <!-- clasp -->
+              <path d="M42 31h14v11H42a5.5 5.5 0 0 1 0-11z"/>
+              <circle cx="47" cy="36.5" r="1.2"/>
+    
+            </svg>
+          </div>
+          <p class="susans-usps__title">Secure Payment</p>
+        </div>
+    
+      </div>
+    </div>
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .susans-usps-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    background: {{ block.settings.background_color }};
+    padding: 38px 20px 32px;
+    box-sizing: border-box;
+  }
+
+  .susans-usps-{{ ai_gen_id }}__grid {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 90px;
+    row-gap: 72px;
+  }
+
+  .susans-usps-{{ ai_gen_id }}__item {
+    text-align: center;
+  }
+
+  .susans-usps-{{ ai_gen_id }}__icon {
+    width: 94px;
+    height: 94px;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    background: {{ block.settings.icon_background }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .susans-usps-{{ ai_gen_id }}__icon svg {
+    width: 42px;
+    height: 42px;
+    stroke: {{ block.settings.icon_color }};
+    fill: none;
+    stroke-width: 1.45;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .susans-usps-{{ ai_gen_id }}__title {
+    margin: 0;
+    color: {{ block.settings.text_color }};
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: .3px;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  @media screen and (max-width: 749px) {
+    .susans-usps-{{ ai_gen_id }} {
+      padding: 28px 12px 26px;
+    }
+
+    .susans-usps-{{ ai_gen_id }}__grid {
+      column-gap: 16px;
+      row-gap: 42px;
+    }
+
+    .susans-usps-{{ ai_gen_id }}__icon {
+      width: 76px;
+      height: 76px;
+      margin-bottom: 9px;
+    }
+
+    .susans-usps-{{ ai_gen_id }}__icon svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    .susans-usps-{{ ai_gen_id }}__title {
+      font-size: 14px;
+      letter-spacing: .2px;
+    }
+  }
+{% endstyle %}
+
+<div class="susans-usps-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="susans-usps-{{ ai_gen_id }}__grid">
+    <div class="susans-usps-{{ ai_gen_id }}__item">
+      <div class="susans-usps-{{ ai_gen_id }}__icon">
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path d="M6 47L18 32L24 38L34 21L58 47" />
+          <path d="M11 47L25 34L31 40L40 30L53 47" />
+          <path d="M30 27L34 21L39 28" />
+          <path d="M15 36L18 32L21 35" />
+          <path d="M8 47H56" />
+        </svg>
+      </div>
+      <p class="susans-usps-{{ ai_gen_id }}__title">{{ block.settings.label_aspen | escape }}</p>
+    </div>
+
+    <div class="susans-usps-{{ ai_gen_id }}__item">
+      <div class="susans-usps-{{ ai_gen_id }}__icon">
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path d="M6 23h15" />
+          <path d="M4 29h14" />
+          <path d="M8 35h10" />
+          <path d="M20 18h24v25H20" />
+          <path d="M44 27h7l7 9v7H44" />
+          <path d="M25 23h13" />
+          <circle cx="28" cy="46" r="3.5" />
+          <circle cx="51" cy="46" r="3.5" />
+        </svg>
+      </div>
+      <p class="susans-usps-{{ ai_gen_id }}__title">{{ block.settings.label_shipping | escape }}</p>
+    </div>
+
+    <div class="susans-usps-{{ ai_gen_id }}__item">
+      <div class="susans-usps-{{ ai_gen_id }}__icon">
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path d="M8 16h8l5 29h28" />
+          <path d="M19 22h36l-6 20H23z" />
+          <path d="M28 22l2 20" />
+          <path d="M38 22v20" />
+          <path d="M48 22l-3 20" />
+          <circle cx="28" cy="50" r="3" />
+          <circle cx="46" cy="50" r="3" />
+        </svg>
+      </div>
+      <p class="susans-usps-{{ ai_gen_id }}__title">{{ block.settings.label_returns | escape }}</p>
+    </div>
+
+    <div class="susans-usps-{{ ai_gen_id }}__item">
+      <div class="susans-usps-{{ ai_gen_id }}__icon">
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <rect x="12" y="22" width="40" height="28" rx="2" />
+          <path d="M18 22l27-8 3 8" />
+          <path d="M21 22l22-5" />
+          <path d="M42 31h14v11H42a5.5 5.5 0 0 1 0-11z" />
+          <circle cx="47" cy="36.5" r="1.2" />
+        </svg>
+      </div>
+      <p class="susans-usps-{{ ai_gen_id }}__title">{{ block.settings.label_payment | escape }}</p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Store benefits grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Benefit labels"
+    },
+    {
+      "type": "text",
+      "id": "label_aspen",
+      "label": "First benefit",
+      "default": "Inspired by Aspen"
+    },
+    {
+      "type": "text",
+      "id": "label_shipping",
+      "label": "Second benefit",
+      "default": "Free Shipping"
+    },
+    {
+      "type": "text",
+      "id": "label_returns",
+      "label": "Third benefit",
+      "default": "Easy 30-Day Returns"
+    },
+    {
+      "type": "text",
+      "id": "label_payment",
+      "label": "Fourth benefit",
+      "default": "Secure Payment"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Icon background",
+      "default": "#183d32"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#183d32"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Store benefits grid"
+    }
+  ],
+  "tag": null,
+  "class": "store-benefits-grid"
+}
+{% endschema %}

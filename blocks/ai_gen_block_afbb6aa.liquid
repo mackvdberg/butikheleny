@@ -1,0 +1,346 @@
+{% doc %}
+  @prompt
+    Bouw een compleet Shopify AI-blok: fotoreviewcarrousel voor Susan’s Aspen Boutique. Lever vormgeving, werkende mobiele bediening en alle editorvelden samen op.
+    
+    INSTELLINGEN
+    Gebruik block.settings met 8 reviewgroepen, zonder geneste blokken. Iedere groep heeft unieke IDs review_1_enabled/image/position/text/rating t/m review_8. Per review: aan/uit, foto, fotopositie Top/Center/Bottom, tekst, score 1–5 met step:0.5. Standaard score 5, positie Center. Elke kaart leest uitsluitend zijn eigen velden. Bij uitschakelen blijven oorspronkelijke reviewnummers behouden.
+    Algemene velden: titel, label, algemene score 1–5 met step:0.1 (standaard 4.7), reviewaantaltekst, kleuren, lettergroottes mobiel/desktop, boven-/onderruimte.
+    Kaartbreedte mobiel instelbaar 75–94%, standaard 88%; desktop 280–440 px, standaard 360 px. Behoud het volledige instellingen-schema bij updates.
+    
+    VORMGEVING
+    Achtergrond #F2F2F2, witte kaarten, tekst #111, sterren #FFD21C. Themalettertype, normaal gewicht.
+    Volgorde: gecentreerde titel; beoordelingsregel; optionele reviewaantaltekst; kaarten; navigatie.
+    Titel: HERE’S WHAT OUR CUSTOMERS SAY. Desktop 30 px; mobiel 16 px op één regel waar mogelijk, anders evenwichtig verdeeld over twee regels. Nooit SAY alleen. Kopzijruimte 12 px.
+    Beoordeling exact “Excellent 4.7/5” met vijf sterren ernaast, gecentreerde flexrij, gap 8 px. /5 vast achter instelbare score. Tekst niet afbreken. Tekst mobiel/desktop 16/22 px; sterren 23/30 px. Reviewaantaltekst 15/19 px, verbergen indien leeg.
+    Sectiepadding 28 px boven/onder; kopregels 12 px uit elkaar; 20 px tot kaarten.
+    
+    AFMETINGEN
+    Zichtbaar carrouselvenster width:100%, max-width:1240px, margin:auto, min-width:0. Alle tussenliggende flex/grid-wrappers min-width:0 en max-width:100%.
+    Meet W als clientWidth van dit venster, nooit scrollWidth van de kaartenrij.
+    Mobiel kaartbreedte = W maal ingestelde percentage. Vanaf 990 px ingestelde desktoppixels. Begrens tot W-24 px. Zet uitkomst in CSS-variabele in pixels.
+    Kaarten: width en flex-basis gelijk aan die variabele; flex-grow:0; flex-shrink:0; min-width:0; box-sizing:border-box; position:relative.
+    Witte achtergrond, rand 1 px #DEDEDE, radius 12 px, padding 12 px. Gap mobiel 12 px, desktop 20 px. Kaarthoogte volgt inhoud, zonder vaste hoogte. Geen horizontale pagina-overflow.
+    
+    FOTO
+    Elke fotocontainer: width:100%; aspect-ratio:1/1; position:relative; overflow:hidden; padding:0; min-height:0; flex:none; border-radius:9px.
+    Alleen de foto binnen dit vlak staat absoluut: inset:0; width:100%; height:100%; object-fit:cover.
+    Fotopositie bepaalt object-position:center top/center center/center bottom.
+    Geen viewporthoogte, padding-bottom-truc of uitrekking door SVG.
+    Ontbrekende foto in editor: vierkant grijs vlak met gecentreerd icoon 40×40 px.
+    Voorbeeld W=375 px, kaart 88%: kaart 330 px, foto 304×304 px.
+    Render alle ingestelde foto’s direct met echte src/srcset en loading="eager". Geen data-src, lazyloadklasse of afhankelijkheid van actieve slide. Reserveer het fotovlak vooraf. Geen witte foto’s tijdens swipen.
+    
+    STERREN EN REVIEWTEKST
+    Onder iedere foto een sterrenrij met display:flex; justify-content:center; align-items:center; width:100%; gap:4px; margin:12px 0 0; padding:0. Sterren 20×20 px, niet krimpen. Altijd als compacte groep onder het fotomidden.
+    Per ster index 0–4: vulling = clamp(score-index,0,1) × 100%. Grijze basis en goud overlappen exact, nooit dubbele rijen. 4.5 geeft vier volle plus één halve ster; 4.7 vier volle plus 70%. Geen parseInt of afronden. SVG-IDs uniek per blok/review/ster. Algemene score onafhankelijk van individuele scores.
+    Reviewtekst na 12 px, gecentreerd, mobiel/desktop 16/17 px, regelhoogte 1.45. Volledig zichtbaar; leeg tekstveld verbergen. Foto, sterren en tekst bewegen samen binnen hun eigen kaart.
+    
+    SCROLLEN EN NAVIGATIE
+    Gebruik alleen native horizontaal scrollen: één overflow-x:auto venster met één flexrij. Geen translateX, gekloonde slides, absolute kaarten of eigen touch-dragcode. touch-action:pan-x pan-y; geen preventDefault op touchmove. Verticaal paginaswipen blijft werken.
+    Gebruik scroll-snap-type:x mandatory en scroll-snap-align:center.
+    Voeg begin-/eindpadding toe van (W-kaartbreedte)/2, zonder extra gap. Ook eerste en laatste kaart moeten kunnen centreren.
+    Maak één geordende lijst van ingeschakelde kaarten voor alle bediening. Eén stip per kaart. Alle acht bereikbaar. Pijlen wijzigen doelindex met één, begrensd tot de echte eerste/laatste.
+    Klikken gebruiken uitsluitend scrollTo op dit venster: actuele scrollLeft + verschil tussen kaartmidden en venstermidden. Geen opgetelde procentuele verschuivingen.
+    Scroll-events bepalen alleen de actieve stip vanuit de dichtstbijzijnde kaart; roep daarin nooit scrollTo aan.
+    Initialiseer eenmaal per blok; ruim listeners op bij herinitialisatie. Herbereken bij gewijzigde breedte of instellingen, niet bij alleen veranderde mobiele schermhoogte. Behoud actieve review.
+    Navigatie 22 px onder kaarten: dunne zwarte pijlen zonder achtergrond, ronde stippen, act
+{% enddoc %}
+{% assign ai_gen_id = block.id | remove: '_' | downcase %}
+
+{% style %}
+  .ai-review-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: {{ block.settings.padding_top }}px 0 {{ block.settings.padding_bottom }}px;
+    background: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    font-family: {{ settings.type_base_font_family.family }}, {{ settings.type_base_font_family.fallback_families }};
+    overflow: hidden;
+  }
+  .ai-review-{{ ai_gen_id }} *, .ai-review-{{ ai_gen_id }} *::before, .ai-review-{{ ai_gen_id }} *::after { box-sizing: border-box; }
+  .ai-review-{{ ai_gen_id }}__inner { width: 100%; max-width: 100%; min-width: 0; }
+  .ai-review-{{ ai_gen_id }}__heading {
+    margin: 0 auto 12px;
+    padding: 0 12px;
+    max-width: 100%;
+    text-align: center;
+    font-size: {{ block.settings.heading_desktop_size }}px;
+    line-height: 1.15;
+    font-weight: 400;
+    overflow-wrap: normal;
+  }
+  .ai-review-{{ ai_gen_id }}__summary { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-width: 0; margin: 0 auto 12px; white-space: nowrap; }
+  .ai-review-{{ ai_gen_id }}__summary-text { font-size: {{ block.settings.summary_desktop_size }}px; line-height: 1.2; font-weight: 400; white-space: nowrap; }
+  .ai-review-{{ ai_gen_id }}__summary-stars { display: inline-flex; gap: 2px; align-items: center; flex: none; }
+  .ai-review-{{ ai_gen_id }}__summary-star { width: {{ block.settings.summary_star_desktop_size }}px; height: {{ block.settings.summary_star_desktop_size }}px; flex: none; }
+  .ai-review-{{ ai_gen_id }}__count { margin: 0 auto 0; text-align: center; font-size: {{ block.settings.count_desktop_size }}px; line-height: 1.3; }
+  .ai-review-{{ ai_gen_id }}__viewport { width: 100%; max-width: 1240px; min-width: 0; margin: 20px auto 0; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .ai-review-{{ ai_gen_id }}__viewport::-webkit-scrollbar { display: none; }
+  .ai-review-{{ ai_gen_id }}__track { display: flex; align-items: stretch; gap: 20px; width: max-content; min-width: 100%; max-width: none; }
+  .ai-review-{{ ai_gen_id }}__card { width: var(--ai-card-width, 360px); flex: 0 0 var(--ai-card-width, 360px); min-width: 0; position: relative; padding: 12px; background: {{ block.settings.card_color }}; border: 1px solid {{ block.settings.border_color }}; border-radius: 12px; scroll-snap-align: center; }
+  .ai-review-{{ ai_gen_id }}__photo { width: 100%; aspect-ratio: 1 / 1; position: relative; overflow: hidden; padding: 0; min-height: 0; flex: none; border-radius: 9px; background: #e6e6e6; }
+  .ai-review-{{ ai_gen_id }}__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ai-review-{{ ai_gen_id }}__placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #666; }
+  .ai-review-{{ ai_gen_id }}__placeholder svg { width: 40px; height: 40px; }
+  .ai-review-{{ ai_gen_id }}__stars { display: flex; justify-content: center; align-items: center; width: 100%; gap: 4px; margin: 12px 0 0; padding: 0; }
+  .ai-review-{{ ai_gen_id }}__star { width: 20px; height: 20px; flex: none; display: block; }
+  .ai-review-{{ ai_gen_id }}__review-text { margin: 12px 0 0; text-align: center; font-size: {{ block.settings.review_mobile_size }}px; line-height: 1.45; font-weight: 400; overflow-wrap: anywhere; }
+  .ai-review-{{ ai_gen_id }}__navigation { min-width: 0; max-width: 100%; margin: 22px auto 0; display: flex; justify-content: center; align-items: center; gap: 18px; }
+  .ai-review-{{ ai_gen_id }}__arrow { width: 32px; height: 32px; padding: 0; display: inline-flex; justify-content: center; align-items: center; color: {{ block.settings.text_color }}; background: transparent; border: 0; cursor: pointer; }
+  .ai-review-{{ ai_gen_id }}__arrow svg { width: 20px; height: 20px; }
+  .ai-review-{{ ai_gen_id }}__arrow:disabled { opacity: .35; cursor: default; }
+  .ai-review-{{ ai_gen_id }}__dots { display: flex; align-items: center; justify-content: center; gap: 9px; }
+  .ai-review-{{ ai_gen_id }}__dot { width: 9px; height: 9px; padding: 0; border: 1px solid {{ block.settings.text_color }}; border-radius: 50%; background: transparent; cursor: pointer; }
+  .ai-review-{{ ai_gen_id }}__dot[aria-current="true"] { background: {{ block.settings.text_color }}; }
+  .ai-review-{{ ai_gen_id }}__arrow:focus-visible, .ai-review-{{ ai_gen_id }}__dot:focus-visible { outline: 2px solid {{ block.settings.text_color }}; outline-offset: 3px; }
+  @media (min-width: 750px) {
+    .ai-review-{{ ai_gen_id }}__review-text { font-size: {{ block.settings.review_desktop_size }}px; }
+  }
+  @media (max-width: 749px) {
+    .ai-review-{{ ai_gen_id }}__heading { font-size: {{ block.settings.heading_mobile_size }}px; }
+    .ai-review-{{ ai_gen_id }}__summary-text { font-size: {{ block.settings.summary_mobile_size }}px; }
+    .ai-review-{{ ai_gen_id }}__summary-star { width: {{ block.settings.summary_star_mobile_size }}px; height: {{ block.settings.summary_star_mobile_size }}px; }
+    .ai-review-{{ ai_gen_id }}__count { font-size: {{ block.settings.count_mobile_size }}px; }
+    .ai-review-{{ ai_gen_id }}__track { gap: 12px; }
+  }
+{% endstyle %}
+
+<ai-review-carousel-{{ ai_gen_id }} class="ai-review-{{ ai_gen_id }}" data-mobile-width="{{ block.settings.mobile_card_width }}" data-desktop-width="{{ block.settings.desktop_card_width }}" {{ block.shopify_attributes }}>
+  <div class="ai-review-{{ ai_gen_id }}__inner">
+    <h2 class="ai-review-{{ ai_gen_id }}__heading">{{ block.settings.title | escape }}</h2>
+    <div class="ai-review-{{ ai_gen_id }}__summary" aria-label="Excellent {{ block.settings.overall_rating }} out of 5">
+      <span class="ai-review-{{ ai_gen_id }}__summary-text">Excellent {{ block.settings.overall_rating }}/5</span>
+      <span class="ai-review-{{ ai_gen_id }}__summary-stars" aria-hidden="true">
+        {% for star_index in (1..5) %}
+          {% assign star_fill = block.settings.overall_rating | minus: forloop.index0 | times: 100 | at_least: 0 | at_most: 100 %}
+          <svg class="ai-review-{{ ai_gen_id }}__summary-star" viewBox="0 0 24 24"><defs><linearGradient id="ai-summary-{{ ai_gen_id }}-{{ forloop.index }}"><stop offset="{{ star_fill }}%" stop-color="{{ block.settings.star_color }}"/><stop offset="{{ star_fill }}%" stop-color="#bdbdbd"/></linearGradient></defs><path fill="url(#ai-summary-{{ ai_gen_id }}-{{ forloop.index }})" d="M12 2.2l2.96 6 6.62.96-4.79 4.67 1.13 6.6L12 17.32l-5.92 3.11 1.13-6.6-4.79-4.67 6.62-.96z"/></svg>
+        {% endfor %}
+      </span>
+    </div>
+    {% if block.settings.review_count_text != blank %}<p class="ai-review-{{ ai_gen_id }}__count">{{ block.settings.review_count_text | escape }}</p>{% endif %}
+    <div class="ai-review-{{ ai_gen_id }}__viewport" data-viewport tabindex="0" aria-label="Customer photo reviews">
+      <div class="ai-review-{{ ai_gen_id }}__track" data-track>
+        {% for review_index in (1..8) %}
+          {% liquid
+            assign enabled_key = 'review_' | append: review_index | append: '_enabled'
+            assign image_key = 'review_' | append: review_index | append: '_image'
+            assign position_key = 'review_' | append: review_index | append: '_position'
+            assign text_key = 'review_' | append: review_index | append: '_text'
+            assign rating_key = 'review_' | append: review_index | append: '_rating'
+            assign review_enabled = block.settings[enabled_key]
+            assign review_image = block.settings[image_key]
+            assign review_position = block.settings[position_key]
+            assign review_text = block.settings[text_key]
+            assign review_rating = block.settings[rating_key]
+            assign object_position = 'center center'
+            if review_position == 'top'
+              assign object_position = 'center top'
+            elsif review_position == 'bottom'
+              assign object_position = 'center bottom'
+            endif
+          %}
+          {% if review_enabled %}
+            <article class="ai-review-{{ ai_gen_id }}__card" data-review-card data-review-number="{{ review_index }}">
+              <div class="ai-review-{{ ai_gen_id }}__photo">
+                {% if review_image != blank %}
+                  <img src="{{ review_image | image_url: width: 900 }}" srcset="{{ review_image | image_url: width: 360 }} 360w, {{ review_image | image_url: width: 600 }} 600w, {{ review_image | image_url: width: 900 }} 900w" sizes="(min-width: 990px) 360px, 88vw" width="{{ review_image.width }}" height="{{ review_image.height }}" alt="{{ review_image.alt | default: 'Customer review photo' | escape }}" loading="eager" fetchpriority="high" style="object-position: {{ object_position }};">
+                {% else %}
+                  <div class="ai-review-{{ ai_gen_id }}__placeholder" aria-label="Add a review photo">{{ 'image' | placeholder_svg_tag }}</div>
+                {% endif %}
+              </div>
+              <div class="ai-review-{{ ai_gen_id }}__stars" aria-label="Rated {{ review_rating }} out of 5">
+                {% for star_index in (1..5) %}
+                  {% assign star_fill = review_rating | minus: forloop.index0 | times: 100 | at_least: 0 | at_most: 100 %}
+                  <svg class="ai-review-{{ ai_gen_id }}__star" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="ai-star-{{ ai_gen_id }}-{{ review_index }}-{{ forloop.index }}"><stop offset="{{ star_fill }}%" stop-color="{{ block.settings.star_color }}"/><stop offset="{{ star_fill }}%" stop-color="#bdbdbd"/></linearGradient></defs><path fill="url(#ai-star-{{ ai_gen_id }}-{{ review_index }}-{{ forloop.index }})" d="M12 2.2l2.96 6 6.62.96-4.79 4.67 1.13 6.6L12 17.32l-5.92 3.11 1.13-6.6-4.79-4.67 6.62-.96z"/></svg>
+                {% endfor %}
+              </div>
+              {% if review_text != blank %}<p class="ai-review-{{ ai_gen_id }}__review-text">{{ review_text | escape | newline_to_br }}</p>{% endif %}
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <nav class="ai-review-{{ ai_gen_id }}__navigation" data-navigation aria-label="Review carousel navigation">
+      <button class="ai-review-{{ ai_gen_id }}__arrow" type="button" data-prev aria-label="Previous review"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="ai-review-{{ ai_gen_id }}__dots" data-dots></div>
+      <button class="ai-review-{{ ai_gen_id }}__arrow" type="button" data-next aria-label="Next review"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </nav>
+  </div>
+</ai-review-carousel-{{ ai_gen_id }}>
+
+<script>
+(() => {
+  const tag = 'ai-review-carousel-{{ ai_gen_id }}';
+  if (customElements.get(tag)) return;
+  class AIReviewCarousel extends HTMLElement {
+    connectedCallback() {
+      if (this.initialized) this.cleanup();
+      this.initialized = true;
+      this.viewport = this.querySelector('[data-viewport]');
+      this.cards = Array.from(this.querySelectorAll('[data-review-card]'));
+      this.nav = this.querySelector('[data-navigation]');
+      this.dots = this.querySelector('[data-dots]');
+      this.prev = this.querySelector('[data-prev]');
+      this.next = this.querySelector('[data-next]');
+      this.activeIndex = Math.min(this.activeIndex || 0, Math.max(0, this.cards.length - 1));
+      this.dots.innerHTML = '';
+      this.cards.forEach((card, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'ai-review-{{ ai_gen_id }}__dot';
+        dot.setAttribute('aria-label', `Go to review ${card.dataset.reviewNumber}`);
+        dot.addEventListener('click', () => this.goTo(index));
+        this.dots.appendChild(dot);
+      });
+      this.onScroll = () => this.updateActive();
+      this.onPrev = () => this.goTo(Math.max(0, this.activeIndex - 1));
+      this.onNext = () => this.goTo(Math.min(this.cards.length - 1, this.activeIndex + 1));
+      this.viewport.addEventListener('scroll', this.onScroll, { passive: true });
+      this.prev.addEventListener('click', this.onPrev);
+      this.next.addEventListener('click', this.onNext);
+      this.resizeObserver = new ResizeObserver(() => this.layout());
+      this.resizeObserver.observe(this.viewport);
+      this.layout();
+      requestAnimationFrame(() => this.goTo(this.activeIndex, false));
+    }
+    disconnectedCallback() { this.cleanup(); }
+    cleanup() {
+      if (this.viewport && this.onScroll) this.viewport.removeEventListener('scroll', this.onScroll);
+      if (this.prev && this.onPrev) this.prev.removeEventListener('click', this.onPrev);
+      if (this.next && this.onNext) this.next.removeEventListener('click', this.onNext);
+      if (this.resizeObserver) this.resizeObserver.disconnect();
+      this.initialized = false;
+    }
+    layout() {
+      if (!this.viewport || !this.cards.length) {
+        if (this.nav) this.nav.hidden = true;
+        return;
+      }
+      this.nav.hidden = this.cards.length < 2;
+      const width = this.viewport.clientWidth;
+      const mobile = window.matchMedia('(max-width: 989px)').matches;
+      const desired = mobile ? width * (Number(this.dataset.mobileWidth) / 100) : Number(this.dataset.desktopWidth);
+      const cardWidth = Math.max(1, Math.min(desired, width - 24));
+      this.style.setProperty('--ai-card-width', `${cardWidth}px`);
+      const sideSpace = Math.max(0, (width - cardWidth) / 2);
+      this.viewport.style.paddingInline = `${sideSpace}px`;
+      this.updateActive();
+    }
+    goTo(index, smooth = true) {
+      if (!this.cards || !this.cards.length) return;
+      this.activeIndex = Math.max(0, Math.min(index, this.cards.length - 1));
+      const card = this.cards[this.activeIndex];
+      const delta = (card.offsetLeft + card.offsetWidth / 2) - (this.viewport.scrollLeft + this.viewport.clientWidth / 2);
+      this.viewport.scrollTo({ left: this.viewport.scrollLeft + delta, behavior: smooth ? 'smooth' : 'auto' });
+      this.renderNav();
+    }
+    updateActive() {
+      if (!this.cards || !this.cards.length || !this.viewport) return;
+      const center = this.viewport.getBoundingClientRect().left + this.viewport.clientWidth / 2;
+      let closest = 0;
+      let distance = Infinity;
+      this.cards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect();
+        const current = Math.abs(rect.left + rect.width / 2 - center);
+        if (current < distance) { distance = current; closest = index; }
+      });
+      this.activeIndex = closest;
+      this.renderNav();
+    }
+    renderNav() {
+      if (!this.dots) return;
+      Array.from(this.dots.children).forEach((dot, index) => dot.setAttribute('aria-current', index === this.activeIndex ? 'true' : 'false'));
+      this.prev.disabled = this.activeIndex <= 0;
+      this.next.disabled = this.activeIndex >= this.cards.length - 1;
+    }
+  }
+  customElements.define(tag, AIReviewCarousel);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Photo review carousel",
+  "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "HERE’S WHAT OUR CUSTOMERS SAY" },
+    { "type": "range", "id": "overall_rating", "label": "Overall rating", "min": 1, "max": 5, "step": 0.1, "default": 4.7 },
+    { "type": "text", "id": "review_count_text", "label": "Review count text", "default": "Based on customer reviews" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "mobile_card_width", "label": "Mobile card width", "min": 75, "max": 94, "step": 1, "unit": "%", "default": 88 },
+    { "type": "range", "id": "desktop_card_width", "label": "Desktop card width", "min": 280, "max": 440, "step": 10, "unit": "px", "default": 360 },
+    { "type": "range", "id": "padding_top", "label": "Top spacing", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 28 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom spacing", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 28 },
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "heading_desktop_size", "label": "Heading desktop", "min": 20, "max": 40, "step": 1, "unit": "px", "default": 30 },
+    { "type": "range", "id": "heading_mobile_size", "label": "Heading mobile", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "summary_desktop_size", "label": "Rating text desktop", "min": 14, "max": 28, "step": 1, "unit": "px", "default": 22 },
+    { "type": "range", "id": "summary_mobile_size", "label": "Rating text mobile", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "summary_star_desktop_size", "label": "Summary stars desktop", "min": 20, "max": 36, "step": 1, "unit": "px", "default": 30 },
+    { "type": "range", "id": "summary_star_mobile_size", "label": "Summary stars mobile", "min": 18, "max": 28, "step": 1, "unit": "px", "default": 23 },
+    { "type": "range", "id": "count_desktop_size", "label": "Count text desktop", "min": 14, "max": 24, "step": 1, "unit": "px", "default": 19 },
+    { "type": "range", "id": "count_mobile_size", "label": "Count text mobile", "min": 12, "max": 18, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "review_desktop_size", "label": "Review text desktop", "min": 14, "max": 22, "step": 1, "unit": "px", "default": 17 },
+    { "type": "range", "id": "review_mobile_size", "label": "Review text mobile", "min": 14, "max": 20, "step": 1, "unit": "px", "default": 16 },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background_color", "label": "Section background", "default": "#F2F2F2" },
+    { "type": "color", "id": "card_color", "label": "Card background", "default": "#FFFFFF" },
+    { "type": "color", "id": "text_color", "label": "Text and navigation", "default": "#111111" },
+    { "type": "color", "id": "star_color", "label": "Stars", "default": "#FFD21C" },
+    { "type": "color", "id": "border_color", "label": "Card border", "default": "#DEDEDE" },
+    { "type": "header", "content": "Review 1" },
+    { "type": "checkbox", "id": "review_1_enabled", "label": "Show review", "default": true },
+    { "type": "image_picker", "id": "review_1_image", "label": "Photo" },
+    { "type": "select", "id": "review_1_position", "label": "Photo position", "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }], "default": "center" },
+    { "type": "textarea", "id": "review_1_text", "label": "Review text" },
+    { "type": "range", "id": "review_1_rating", "label": "Rating", "min": 1, "max": 5, "step": 0.5, "default": 5 },
+    { "type": "header", "content": "Review 2" },
+    { "type": "checkbox", "id": "review_2_enabled", "label": "Show review", "default": true },
+    { "type": "image_picker", "id": "review_2_image", "label": "Photo" },
+    { "type": "select", "id": "review_2_position", "label": "Photo position", "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }], "default": "center" },
+    { "type": "textarea", "id": "review_2_text", "label": "Review text" },
+    { "type": "range", "id": "review_2_rating", "label": "Rating", "min": 1, "max": 5, "step": 0.5, "default": 5 },
+    { "type": "header", "content": "Review 3" },
+    { "type": "checkbox", "id": "review_3_enabled", "label": "Show review", "default": true },
+    { "type": "image_picker", "id": "review_3_image", "label": "Photo" },
+    { "type": "select", "id": "review_3_position", "label": "Photo position", "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }], "default": "center" },
+    { "type": "textarea", "id": "review_3_text", "label": "Review text" },
+    { "type": "range", "id": "review_3_rating", "label": "Rating", "min": 1, "max": 5, "step": 0.5, "default": 5 },
+    { "type": "header", "content": "Review 4" },
+    { "type": "checkbox", "id": "review_4_enabled", "label": "Show review", "default": true },
+    { "type": "image_picker", "id": "review_4_image", "label": "Photo" },
+    { "type": "select", "id": "review_4_position", "label": "Photo position", "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }], "default": "center" },
+    { "type": "textarea", "id": "review_4_text", "label": "Review text" },
+    { "type": "range", "id": "review_4_rating", "label": "Rating", "min": 1, "max": 5, "step": 0.5, "default": 5 },
+    { "type": "header", "content": "Review 5" },
+    { "type": "checkbox", "id": "review_5_enabled", "label": "Show review", "default": true },
+    { "type": "image_picker", "id": "review_5_image", "label": "Photo" },
+    { "type": "select", "id": "review_5_position", "label": "Photo position", "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }], "default": "center" },
+    { "type": "textarea", "id": "review_5_text", "label": "Review text" },
+    { "type": "range", "id": "review_5_rating", "label": "Rating", "min": 1, "max": 5, "step": 0.5, "default": 5 },
+    { "type": "header", "content": "Review 6" },
+    { "type": "checkbox", "id": "review_6_enabled", "label": "Show review", "default": true },
+    { "type": "image_picker", "id": "review_6_image", "label": "Photo" },
+    { "type": "select", "id": "review_6_position", "label": "Photo position", "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }], "default": "center" },
+    { "type": "textarea", "id": "review_6_text", "label": "Review text" },
+    { "type": "range", "id": "review_6_rating", "label": "Rating", "min": 1, "max": 5, "step": 0.5, "default": 5 },
+    { "type": "header", "content": "Review 7" },
+    { "type": "checkbox", "id": "review_7_enabled", "label": "Show review", "default": true },
+    { "type": "image_picker", "id": "review_7_image", "label": "Photo" },
+    { "type": "select", "id": "review_7_position", "label": "Photo position", "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }], "default": "center" },
+    { "type": "textarea", "id": "review_7_text", "label": "Review text" },
+    { "type": "range", "id": "review_7_rating", "label": "Rating", "min": 1, "max": 5, "step": 0.5, "default": 5 },
+    { "type": "header", "content": "Review 8" },
+    { "type": "checkbox", "id": "review_8_enabled", "label": "Show review", "default": true },
+    { "type": "image_picker", "id": "review_8_image", "label": "Photo" },
+    { "type": "select", "id": "review_8_position", "label": "Photo position", "options": [{ "value": "top", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "bottom", "label": "Bottom" }], "default": "center" },
+    { "type": "textarea", "id": "review_8_text", "label": "Review text" },
+    { "type": "range", "id": "review_8_rating", "label": "Rating", "min": 1, "max": 5, "step": 0.5, "default": 5 }
+  ],
+  "presets": [{ "name": "Photo review carousel" }],
+  "tag": null,
+  "class": "photo-review-carousel"
+}
+{% endschema %}

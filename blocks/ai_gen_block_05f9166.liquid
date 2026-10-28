@@ -1,0 +1,261 @@
+{% doc %}
+  @prompt
+    Maak een bewerkbaar fotoreviewcarrousel-blok voor Susan’s Aspen Boutique.
+    
+    EDITOR
+    Maak 8 reviewplekken rechtstreeks in de blokinstellingen, zonder geneste blokken. Per review:
+    - Aan/uit.
+    - Afbeeldingkiezer.
+    - Fotopositie: Boven, Midden of Onder.
+    - Reviewtekst.
+    - Sterrenscore.
+    
+    Fotopositie stuurt object-position: center top, center center of center bottom. Standaard Midden. Bewaar alle ingevoerde inhoud bij wijzigingen.
+    
+    Algemene instellingen: titel, beoordelingslabel, gemiddelde score, reviewaantaltekst, kleuren, lettergroottes mobiel/desktop, boven-/onderruimte en kaartbreedte mobiel/desktop.
+    
+    OPBOUW EN STIJL
+    Achtergrond #F2F2F2, tekst #111, themalettertype, normaal lettergewicht. Volgorde:
+    1. Gecentreerde titel: HERE’S WHAT OUR CUSTOMERS SAY.
+    2. Eén gecentreerde regel: Excellent 4.7/5 met vijf goudgele sterren ernaast.
+    3. Vrij invulbare reviewaantaltekst; verbergen indien leeg.
+    4. Fotoreviewkaarten.
+    5. Pijlen en stippen.
+    
+    Titel desktop 30 px. Mobiel 16 px op één regel waar dit past; anders twee evenwichtige regels, nooit SAY alleen. Geef de kop 12 px zijruimte.
+    Beoordeling mobiel 16 px, desktop 22 px; sterren 23/30 px. Tekst en sterren naast elkaar met 8 px tussenruimte. Excellent 4.7/5 niet afbreken. Score instelbaar, /5 altijd zichtbaar.
+    Sterren #FFD21C. Bij 4.7 vier volle sterren en één 70% gevuld. Gebruik SVG met overlappende vulling, geen dubbele sterrenrij.
+    Reviewaantal 15/19 px. Kopregels 12 px uit elkaar; 20 px tot kaarten. Sectiepadding 28 px boven/onder.
+    
+    KAARTBREEDTE
+    Voeg schuifregelaars toe:
+    - Mobiel: 75–94% van het zichtbare carrouselvenster, standaard 88%.
+    - Desktop vanaf 990 px: 280–440 px, standaard 360 px.
+    
+    Meet W via clientWidth van het zichtbare venster, NOOIT scrollWidth van de kaartenrij. Bereken mobiele kaartbreedte als W maal het ingestelde percentage. Desktop gebruikt de ingestelde pixelbreedte. Begrens kaarten tot W minus 24 px.
+    
+    Sla de uitkomst op als CSS-variabele in pixels. Kaart: width en flex-basis gelijk aan deze variabele; flex-grow:0; flex-shrink:0; min-width:0; box-sizing:border-box.
+    Venster: width:100%; max-width:1240px; margin:auto. Alle tussenliggende flex/grid-wrappers: min-width:0; max-width:100%. Geen width:max-content op de buitenste container.
+    
+    KAART EN FOTO
+    Witte kaart, rand 1 px #DEDEDE, hoekradius 12 px, padding 12 px. Kaartafstand mobiel 12 px, desktop 20 px.
+    Fotocontainer: width:100%; aspect-ratio:1/1; position:relative; overflow:hidden; padding:0; min-height:0; flex:none; border-radius:9px.
+    Foto: position:absolute; inset:0; width:100%; height:100%; object-fit:cover. Gebruik de gekozen fotopositie.
+    Geen vaste fotohoogte, viewporthoogte, padding-bottom-truc of flex-grow.
+    Placeholder: hetzelfde vierkante vlak, grijze achtergrond en gecentreerd icoon van 40 × 40 px; nooit een SVG die de kaart oprekt.
+    Controle: bij W=375 px en kaartbreedte 88% is de kaart 330 px en de foto 304 × 304 px.
+    
+    Onder foto: 12 px ruimte, gecentreerde reviewsterren van 20 px, 12 px ruimte en volledige reviewtekst. Tekst mobiel 16 px, desktop 17 px, regelhoogte 1.45. Lege tekst verbergen. Kaarten bovenaan uitlijnen; hoogte volgt inhoud. Geen vaste hoogte of lege opvulling onder korte reviews.
+    
+    CARROUSEL
+    Horizontale scrollcontainer met scroll-snap-type:x mandatory; kaarten scroll-snap-align:center. Begin-/eindruimte ieder (W - kaartbreedte)/2, zonder extra gap bij deze ruimte.
+    Centreer iedere gekozen kaart vanuit het werkelijke kaartmidden minus de halve vensterbreedte. Geen opgetelde procentuele verschuivingen. Ook eerste en laatste kaart exact centreren.
+    Herbereken bij resize, gewijzigde kaartbreedte en editorupdates. Behoud de actieve review. Verticaal scrollen verandert de horizontale positie niet. Geen horizontale pagina-overflow.
+    
+    NAVIGATIE
+    22 px onder de kaarten: dunne zwarte linkerpijl, stippen, rechterpijl. Geen achtergrond achter pijlen. Actieve stip gevuld, overige omlijnd. Eén kaart per klik, mobiel swipen, toetsenbordbediening. Stippen volgen actieve kaart; verbergen bij één review. Autoplay uit.
+    
+    Beperk CSS/JavaScript tot dit blok. Controleer op 320, 375 en 430 px: vierkante foto’s/placeholders, werkende fotopositie en breedteregelaars, volledige tekst en centrering van iedere slide.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-photo-reviews-{{ ai_gen_id }} { display:block; width:100%; max-width:100%; box-sizing:border-box; padding:28px 0; background:#F2F2F2; color:#111111; font-family:{{ settings.type_base_font_family.family }}, sans-serif; font-weight:400; }
+  .ai-photo-reviews-{{ ai_gen_id }} * { box-sizing:border-box; }
+  .ai-photo-reviews-{{ ai_gen_id }}__inner { width:{{ block.settings.desktop_width_percent }}%; max-width:100%; margin:0 auto; min-width:0; }
+  .ai-photo-reviews-{{ ai_gen_id }}__heading { margin:0 12px 12px; text-align:center; font-family:{{ settings.type_header_font_family.family }}, sans-serif; font-weight:400; font-size:30px; line-height:1.15; }
+  .ai-photo-reviews-{{ ai_gen_id }}__summary { display:flex; justify-content:center; align-items:center; gap:8px; margin:0 12px 12px; white-space:nowrap; font-size:22px; line-height:1.2; }
+  .ai-photo-reviews-{{ ai_gen_id }}__summary-score { white-space:nowrap; }
+  .ai-photo-reviews-{{ ai_gen_id }}__stars { display:inline-flex; gap:2px; color:#FFD21C; vertical-align:middle; }
+  .ai-photo-reviews-{{ ai_gen_id }}__star { display:block; width:var(--star-size); height:var(--star-size); }
+  .ai-photo-reviews-{{ ai_gen_id }}__count { margin:0 12px 20px; text-align:center; font-size:19px; line-height:1.3; }
+  .ai-photo-reviews-{{ ai_gen_id }}__count:empty { display:none; }
+  .ai-photo-reviews-{{ ai_gen_id }}__viewport { width:100%; max-width:1240px; margin:0 auto; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scrollbar-width:none; min-width:0; }
+  .ai-photo-reviews-{{ ai_gen_id }}__viewport::-webkit-scrollbar { display:none; }
+  .ai-photo-reviews-{{ ai_gen_id }}__track { display:flex; align-items:flex-start; gap:12px; width:100%; max-width:100%; min-width:0; }
+  .ai-photo-reviews-{{ ai_gen_id }}__spacer { flex:0 0 var(--edge-space,0px); width:var(--edge-space,0px); min-width:0; }
+  .ai-photo-reviews-{{ ai_gen_id }}__card { width:var(--card-width,88%); flex:0 0 var(--card-width,88%); flex-grow:0; flex-shrink:0; min-width:0; box-sizing:border-box; align-self:flex-start; padding:12px; border:1px solid #DEDEDE; border-radius:12px; background:#fff; scroll-snap-align:center; }
+  .ai-photo-reviews-{{ ai_gen_id }}__photo { position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; padding:0; min-height:0; flex:none; border-radius:9px; background:#e5e5e5; }
+  .ai-photo-reviews-{{ ai_gen_id }}__photo img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .ai-photo-reviews-{{ ai_gen_id }}__placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:#e5e5e5; }
+  .ai-photo-reviews-{{ ai_gen_id }}__placeholder svg { width:40px; height:40px; max-width:40px; max-height:40px; color:#666; }
+  .ai-photo-reviews-{{ ai_gen_id }}__review-stars { display:flex; justify-content:center; margin-top:12px; --star-size:20px; }
+  .ai-photo-reviews-{{ ai_gen_id }}__text { margin:12px 0 0; text-align:center; font-size:17px; line-height:1.45; overflow-wrap:anywhere; }
+  .ai-photo-reviews-{{ ai_gen_id }}__text:empty { display:none; }
+  .ai-photo-reviews-{{ ai_gen_id }}__navigation { display:flex; align-items:center; justify-content:center; gap:18px; margin:22px auto 0; min-width:0; }
+  .ai-photo-reviews-{{ ai_gen_id }}__arrow { display:flex; align-items:center; justify-content:center; width:32px; height:32px; padding:0; border:0; background:transparent; color:#111; cursor:pointer; }
+  .ai-photo-reviews-{{ ai_gen_id }}__arrow:focus-visible,.ai-photo-reviews-{{ ai_gen_id }}__dot:focus-visible { outline:2px solid #111; outline-offset:3px; }
+  .ai-photo-reviews-{{ ai_gen_id }}__arrow svg { width:21px; height:21px; }
+  .ai-photo-reviews-{{ ai_gen_id }}__dots { display:flex; align-items:center; justify-content:center; gap:9px; }
+  .ai-photo-reviews-{{ ai_gen_id }}__dot { width:10px; height:10px; padding:0; border:1px solid #111; border-radius:50%; background:transparent; cursor:pointer; }
+  .ai-photo-reviews-{{ ai_gen_id }}__dot[aria-current="true"] { background:#111; }
+  .ai-photo-reviews-{{ ai_gen_id }}__navigation[data-single="true"] .ai-photo-reviews-{{ ai_gen_id }}__dots { display:none; }
+  @media (max-width:749px) {
+    .ai-photo-reviews-{{ ai_gen_id }}__heading { font-size:16px; line-height:1.15; }
+    .ai-photo-reviews-{{ ai_gen_id }}__summary { font-size:16px; }
+    .ai-photo-reviews-{{ ai_gen_id }}__count { font-size:15px; }
+    .ai-photo-reviews-{{ ai_gen_id }}__track { gap:12px; }
+    .ai-photo-reviews-{{ ai_gen_id }}__text { font-size:16px; }
+    .ai-photo-reviews-{{ ai_gen_id }}__summary .ai-photo-reviews-{{ ai_gen_id }}__star { width:23px; height:23px; }
+  }
+  @media (min-width:750px) {
+    .ai-photo-reviews-{{ ai_gen_id }}__track { gap:20px; }
+    .ai-photo-reviews-{{ ai_gen_id }}__card { width:var(--card-width,360px); flex-basis:var(--card-width,360px); }
+  }
+{% endstyle %}
+
+<photo-review-carousel-{{ ai_gen_id }} class="ai-photo-reviews-{{ ai_gen_id }}" data-mobile-percent="{{ block.settings.mobile_card_percent }}" data-desktop-width="{{ block.settings.desktop_card_width }}" {{ block.shopify_attributes }}>
+  <div class="ai-photo-reviews-{{ ai_gen_id }}__inner">
+    {% if block.settings.title != blank %}<h2 class="ai-photo-reviews-{{ ai_gen_id }}__heading">{{ block.settings.title | escape }}</h2>{% endif %}
+    <div class="ai-photo-reviews-{{ ai_gen_id }}__summary"><span class="ai-photo-reviews-{{ ai_gen_id }}__summary-score">{{ block.settings.rating_label | escape }} {{ block.settings.average_score | escape }}/5</span><span class="ai-photo-reviews-{{ ai_gen_id }}__stars" style="--star-size:{{ block.settings.summary_star_size }}px" aria-label="{{ block.settings.average_score | escape }} out of 5 stars">
+      {% for i in (1..5) %}{% assign star_fraction = block.settings.average_score | times: 1.0 | minus: forloop.index0 %}{% if star_fraction > 1 %}{% assign star_fraction = 1 %}{% elsif star_fraction < 0 %}{% assign star_fraction = 0 %}{% endif %}<svg class="ai-photo-reviews-{{ ai_gen_id }}__star" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="ai-star-{{ ai_gen_id }}-{{ forloop.index }}"><rect x="0" y="0" width="{{ star_fraction | times: 24 }}" height="24" /></clipPath></defs><path fill="#b8b8b8" d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/><path clip-path="url(#ai-star-{{ ai_gen_id }}-{{ forloop.index }})" fill="#FFD21C" d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/></svg>{% endfor %}
+    </span></div>
+    {% if block.settings.review_count_text != blank %}<p class="ai-photo-reviews-{{ ai_gen_id }}__count">{{ block.settings.review_count_text | escape }}</p>{% endif %}
+    <div class="ai-photo-reviews-{{ ai_gen_id }}__viewport" tabindex="0" aria-label="Customer photo reviews"><div class="ai-photo-reviews-{{ ai_gen_id }}__track"><div class="ai-photo-reviews-{{ ai_gen_id }}__spacer" aria-hidden="true"></div>
+      {% assign enabled_count = 0 %}
+      {% for i in (1..8) %}{% assign enabled_key = 'review_' | append: i | append: '_enabled' %}{% if block.settings[enabled_key] %}{% assign enabled_count = enabled_count | plus: 1 %}{% endif %}{% endfor %}
+      {% for i in (1..8) %}
+        {% liquid
+          assign enabled_key = 'review_' | append: i | append: '_enabled'
+          assign image_key = 'review_' | append: i | append: '_image'
+          assign position_key = 'review_' | append: i | append: '_position'
+          assign text_key = 'review_' | append: i | append: '_text'
+          assign rating_key = 'review_' | append: i | append: '_rating'
+          assign enabled = block.settings[enabled_key]
+          assign review_image = block.settings[image_key]
+          assign review_position = block.settings[position_key]
+          assign review_text = block.settings[text_key]
+          assign review_rating = block.settings[rating_key]
+          assign object_position = 'center center'
+          if review_position == 'top'
+            assign object_position = 'center top'
+          elsif review_position == 'bottom'
+            assign object_position = 'center bottom'
+          endif
+        %}
+        {% if enabled %}<article class="ai-photo-reviews-{{ ai_gen_id }}__card" data-review-index="{{ enabled_count | minus: enabled_count | plus: forloop.index0 }}">
+          <div class="ai-photo-reviews-{{ ai_gen_id }}__photo">{% if review_image %}<img src="{{ review_image | image_url: width: 1000 }}" alt="{{ review_image.alt | default: 'Customer review photo' | escape }}" loading="lazy" width="{{ review_image.width }}" height="{{ review_image.height }}" style="object-position:{{ object_position }}">{% else %}<div class="ai-photo-reviews-{{ ai_gen_id }}__placeholder">{{ 'image' | placeholder_svg_tag }}</div>{% endif %}</div>
+          <div class="ai-photo-reviews-{{ ai_gen_id }}__stars ai-photo-reviews-{{ ai_gen_id }}__review-stars" aria-label="{{ review_rating }} out of 5 stars">{% for star in (1..5) %}<svg class="ai-photo-reviews-{{ ai_gen_id }}__star" viewBox="0 0 24 24" aria-hidden="true"><path fill="{% if star <= review_rating %}#FFD21C{% else %}#b8b8b8{% endif %}" d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/></svg>{% endfor %}</div>
+          {% if review_text != blank %}<p class="ai-photo-reviews-{{ ai_gen_id }}__text">{{ review_text | escape | newline_to_br }}</p>{% endif %}
+        </article>{% endif %}
+      {% endfor %}
+      <div class="ai-photo-reviews-{{ ai_gen_id }}__spacer" aria-hidden="true"></div>
+    </div></div>
+    <div class="ai-photo-reviews-{{ ai_gen_id }}__navigation" data-single="false" aria-label="Review navigation"><button class="ai-photo-reviews-{{ ai_gen_id }}__arrow" type="button" data-direction="-1" aria-label="Previous review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><div class="ai-photo-reviews-{{ ai_gen_id }}__dots"></div><button class="ai-photo-reviews-{{ ai_gen_id }}__arrow" type="button" data-direction="1" aria-label="Next review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>
+  </div>
+</photo-review-carousel-{{ ai_gen_id }}>
+
+<script>
+(function(){
+  const tag='photo-review-carousel-{{ ai_gen_id }}';
+  if(customElements.get(tag)) return;
+  class PhotoReviewCarousel extends HTMLElement {
+    connectedCallback(){
+      this.viewport=this.querySelector('.ai-photo-reviews-{{ ai_gen_id }}__viewport');
+      this.track=this.querySelector('.ai-photo-reviews-{{ ai_gen_id }}__track');
+      this.cards=Array.from(this.querySelectorAll('.ai-photo-reviews-{{ ai_gen_id }}__card'));
+      this.spacers=this.querySelectorAll('.ai-photo-reviews-{{ ai_gen_id }}__spacer');
+      this.navigation=this.querySelector('.ai-photo-reviews-{{ ai_gen_id }}__navigation');
+      this.dots=this.querySelector('.ai-photo-reviews-{{ ai_gen_id }}__dots');
+      if(!this.viewport||!this.track) return;
+      this.active=0;
+      this.dots.innerHTML='';
+      this.cards.forEach((card,index)=>{const dot=document.createElement('button');dot.type='button';dot.className='ai-photo-reviews-{{ ai_gen_id }}__dot';dot.setAttribute('aria-label','Go to review '+(index+1));dot.addEventListener('click',()=>this.goTo(index));this.dots.appendChild(dot);});
+      this.navigation.dataset.single=this.cards.length<=1?'true':'false';
+      this.querySelectorAll('[data-direction]').forEach(button=>button.addEventListener('click',()=>this.goTo(this.active+Number(button.dataset.direction))));
+      this.viewport.addEventListener('keydown',event=>{if(event.key==='ArrowRight'){event.preventDefault();this.goTo(this.active+1);}if(event.key==='ArrowLeft'){event.preventDefault();this.goTo(this.active-1);}});
+      this.viewport.addEventListener('scroll',()=>this.updateActive(),{passive:true});
+      this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(this.viewport);
+      this.mutationObserver=new MutationObserver(()=>this.resize());this.mutationObserver.observe(this,{attributes:true,childList:true,subtree:true});
+      this.resize();
+    }
+    disconnectedCallback(){if(this.resizeObserver)this.resizeObserver.disconnect();if(this.mutationObserver)this.mutationObserver.disconnect();}
+    resize(){
+      if(!this.viewport||!this.cards.length)return;
+      const w=this.viewport.clientWidth;if(!w)return;
+      const mobile=window.matchMedia('(max-width: 749px)').matches;
+      const requested=mobile?w*Number(this.dataset.mobilePercent)/100:Number(this.dataset.desktopWidth);
+      const width=Math.max(1,Math.min(requested,w-24));
+      this.style.setProperty('--card-width',width+'px');
+      const edge=Math.max(0,(w-width)/2);this.style.setProperty('--edge-space',edge+'px');
+      this.cards.forEach(card=>{card.style.width='var(--card-width)';card.style.flexBasis='var(--card-width)';});
+      const prior=Math.min(this.active,this.cards.length-1);requestAnimationFrame(()=>this.goTo(prior,false));
+    }
+    goTo(index,behavior=true){
+      if(!this.cards.length)return;
+      this.active=Math.max(0,Math.min(index,this.cards.length-1));
+      const card=this.cards[this.active];const center=card.offsetLeft+card.offsetWidth/2;
+      this.viewport.scrollTo({left:center-this.viewport.clientWidth/2,behavior:behavior?'smooth':'auto'});this.updateDots();
+    }
+    updateActive(){
+      if(!this.cards.length)return;
+      const center=this.viewport.scrollLeft+this.viewport.clientWidth/2;let nearest=0;let distance=Infinity;
+      this.cards.forEach((card,index)=>{const d=Math.abs(card.offsetLeft+card.offsetWidth/2-center);if(d<distance){distance=d;nearest=index;}});
+      this.active=nearest;this.updateDots();
+    }
+    updateDots(){this.dots.querySelectorAll('button').forEach((dot,index)=>dot.setAttribute('aria-current',index===this.active?'true':'false'));}
+  }
+  customElements.define(tag,PhotoReviewCarousel);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Photo review carousel",
+  "settings": [
+    {"type":"range","id":"desktop_width_percent","label":"Desktop block width","min":50,"max":100,"step":5,"unit":"%","default":100},
+    {"type":"header","content":"General"},
+    {"type":"text","id":"title","label":"Title","default":"HERE’S WHAT OUR CUSTOMERS SAY"},
+    {"type":"text","id":"rating_label","label":"Rating label","default":"Excellent"},
+    {"type":"text","id":"average_score","label":"Average score","default":"4.7"},
+    {"type":"text","id":"review_count_text","label":"Review count text","default":"Based on customer reviews"},
+    {"type":"range","id":"summary_star_size","label":"Desktop summary star size","min":20,"max":40,"step":1,"unit":"px","default":30},
+    {"type":"range","id":"mobile_card_percent","label":"Mobile card width","min":75,"max":94,"step":1,"unit":"%","default":88},
+    {"type":"range","id":"desktop_card_width","label":"Desktop card width","min":280,"max":440,"step":10,"unit":"px","default":360},
+    {"type":"header","content":"Reviews"},
+    {"type":"checkbox","id":"review_1_enabled","label":"Review 1 enabled","default":true},
+    {"type":"image_picker","id":"review_1_image","label":"Review 1 image"},
+    {"type":"select","id":"review_1_position","label":"Review 1 photo position","options":[{"value":"top","label":"Top"},{"value":"center","label":"Center"},{"value":"bottom","label":"Bottom"}],"default":"center"},
+    {"type":"textarea","id":"review_1_text","label":"Review 1 text","default":"A beautiful piece and wonderful quality."},
+    {"type":"range","id":"review_1_rating","label":"Review 1 stars","min":1,"max":5,"step":1,"default":5},
+    {"type":"checkbox","id":"review_2_enabled","label":"Review 2 enabled","default":true},
+    {"type":"image_picker","id":"review_2_image","label":"Review 2 image"},
+    {"type":"select","id":"review_2_position","label":"Review 2 photo position","options":[{"value":"top","label":"Top"},{"value":"center","label":"Center"},{"value":"bottom","label":"Bottom"}],"default":"center"},
+    {"type":"textarea","id":"review_2_text","label":"Review 2 text","default":"Lovely fit, soft fabric, and fast delivery."},
+    {"type":"range","id":"review_2_rating","label":"Review 2 stars","min":1,"max":5,"step":1,"default":5},
+    {"type":"checkbox","id":"review_3_enabled","label":"Review 3 enabled","default":true},
+    {"type":"image_picker","id":"review_3_image","label":"Review 3 image"},
+    {"type":"select","id":"review_3_position","label":"Review 3 photo position","options":[{"value":"top","label":"Top"},{"value":"center","label":"Center"},{"value":"bottom","label":"Bottom"}],"default":"center"},
+    {"type":"textarea","id":"review_3_text","label":"Review 3 text","default":"Exactly as pictured. I will shop here again."},
+    {"type":"range","id":"review_3_rating","label":"Review 3 stars","min":1,"max":5,"step":1,"default":5},
+    {"type":"checkbox","id":"review_4_enabled","label":"Review 4 enabled","default":true},
+    {"type":"image_picker","id":"review_4_image","label":"Review 4 image"},
+    {"type":"select","id":"review_4_position","label":"Review 4 photo position","options":[{"value":"top","label":"Top"},{"value":"center","label":"Center"},{"value":"bottom","label":"Bottom"}],"default":"center"},
+    {"type":"textarea","id":"review_4_text","label":"Review 4 text","default":"Great service and a gorgeous blouse."},
+    {"type":"range","id":"review_4_rating","label":"Review 4 stars","min":1,"max":5,"step":1,"default":5},
+    {"type":"checkbox","id":"review_5_enabled","label":"Review 5 enabled","default":true},
+    {"type":"image_picker","id":"review_5_image","label":"Review 5 image"},
+    {"type":"select","id":"review_5_position","label":"Review 5 photo position","options":[{"value":"top","label":"Top"},{"value":"center","label":"Center"},{"value":"bottom","label":"Bottom"}],"default":"center"},
+    {"type":"textarea","id":"review_5_text","label":"Review 5 text","default":"Comfortable, flattering, and easy to style."},
+    {"type":"range","id":"review_5_rating","label":"Review 5 stars","min":1,"max":5,"step":1,"default":5},
+    {"type":"checkbox","id":"review_6_enabled","label":"Review 6 enabled","default":true},
+    {"type":"image_picker","id":"review_6_image","label":"Review 6 image"},
+    {"type":"select","id":"review_6_position","label":"Review 6 photo position","options":[{"value":"top","label":"Top"},{"value":"center","label":"Center"},{"value":"bottom","label":"Bottom"}],"default":"center"},
+    {"type":"textarea","id":"review_6_text","label":"Review 6 text","default":"Excellent quality and a lovely shopping experience."},
+    {"type":"range","id":"review_6_rating","label":"Review 6 stars","min":1,"max":5,"step":1,"default":5},
+    {"type":"checkbox","id":"review_7_enabled","label":"Review 7 enabled","default":true},
+    {"type":"image_picker","id":"review_7_image","label":"Review 7 image"},
+    {"type":"select","id":"review_7_position","label":"Review 7 photo position","options":[{"value":"top","label":"Top"},{"value":"center","label":"Center"},{"value":"bottom","label":"Bottom"}],"default":"center"},
+    {"type":"textarea","id":"review_7_text","label":"Review 7 text","default":"My new favorite boutique find."},
+    {"type":"range","id":"review_7_rating","label":"Review 7 stars","min":1,"max":5,"step":1,"default":5},
+    {"type":"checkbox","id":"review_8_enabled","label":"Review 8 enabled","default":true},
+    {"type":"image_picker","id":"review_8_image","label":"Review 8 image"},
+    {"type":"select","id":"review_8_position","label":"Review 8 photo position","options":[{"value":"top","label":"Top"},{"value":"center","label":"Center"},{"value":"bottom","label":"Bottom"}],"default":"center"},
+    {"type":"textarea","id":"review_8_text","label":"Review 8 text","default":"Beautiful details and helpful customer care."},
+    {"type":"range","id":"review_8_rating","label":"Review 8 stars","min":1,"max":5,"step":1,"default":5}
+  ],
+  "presets": [{"name":"Photo review carousel"}],
+  "tag": null,
+  "class": "photo-review-carousel-block"
+}
+{% endschema %}

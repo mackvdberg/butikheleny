@@ -1,0 +1,361 @@
+{% doc %}
+  @prompt
+    Bouw een volledig aanpasbare reviewcarrousel voor Susan’s Aspen Boutique. Gebruik de meegestuurde screenshot als visuele referentie. Neem de opbouw, verhoudingen en rustige uitstraling over. Ik wil alle foto’s, teksten, beoordelingen en kleuren zelf kunnen aanpassen via de Shopify-editor.
+    
+    **1. Algemene vormgeving**
+    
+    - Een sectie over de volledige paginabreedte met een lichtgrijze achtergrond, standaard #F2F2F2.
+    - Witte reviewkaarten met een subtiele lichtgrijze rand van 1 px, afgeronde hoeken van ongeveer 12 px en geen opvallende schaduw.
+    - Zwarte tekst en goudgele sterren, standaard #FFD21C.
+    - Gebruik het bestaande lettertype van mijn thema.
+    - Houd de uitstraling rustig, verzorgd en goed leesbaar.
+    - Geen extra verkoopknoppen, productprijzen of decoratieve elementen.
+    
+    **2. Kop boven de reviews**
+    
+    Plaats bovenaan drie gecentreerde onderdelen:
+    
+    1. Een titel: “HERE’S WHAT OUR CUSTOMERS SAY”.
+    2. Daaronder een regel met een instelbaar beoordelingslabel en een score, gevolgd door vijf sterren.
+    3. Daaronder een aparte regel voor het totale aantal reviews.
+    
+    De titel is in hoofdletters, met normaal tot medium lettergewicht en een lichte letterafstand. Gebruik op desktop ongeveer 32 px voor de titel, 24 px voor de beoordelingsregel en 20 px voor het reviewaantal.
+    
+    Zorg voor ongeveer 20 px tussen de titel en de beoordelingsregel, 12 px tot het reviewaantal en 26 px tot de kaarten.
+    
+    Maak het beoordelingslabel, de score en het reviewaantal afzonderlijk instelbaar. Vul geen verzonnen reviewaantallen in. De sterren moeten hun vulling baseren op de ingestelde score, inclusief een gedeeltelijk gevulde ster bij decimalen.
+    
+    **3. Opbouw van iedere reviewkaart**
+    
+    Iedere kaart bevat deze onderdelen, in deze volgorde:
+    
+    1. Een grote vierkante klantfoto.
+    2. Een gecentreerde rij goudgele sterren.
+    3. De gecentreerde reviewtekst.
+    
+    De foto staat binnen de witte kaart met ongeveer 14 px ruimte rondom. Gebruik een beeldverhouding van 1:1, afgeronde hoeken van ongeveer 9 px en object-fit: cover. Laat mij per foto het uitsnedepunt aanpassen.
+    
+    Onder de foto komt ongeveer 14 px ruimte tot de sterren. Onder de sterren ongeveer 12 px ruimte tot de tekst.
+    
+    Gebruik voor de reviewtekst ongeveer 17 px op desktop, normaal lettergewicht en een regelhoogte van 1,45. Geef de tekst voldoende ruimte aan de zijkanten en onderkant.
+    
+    Alle kaarten binnen dezelfde weergave moeten even hoog zijn. Toon de volledige reviewtekst zonder afkappen, “read more” of een interne scrollbar. Laat de hoogte meegroeien met de langste review.
+    
+    Voeg optioneel een klantnaam en locatie onder de tekst toe. Deze velden staan standaard uit, zodat het ontwerp overeenkomt met de screenshot.
+    
+    **4. Desktopcarrousel**
+    
+    - Toon drie volledige reviewkaarten in het midden.
+    - Laat aan de linker- en rechterrand een klein gedeelte van de aangrenzende kaart zien, zoals in het voorbeeld.
+    - Gebruik ongeveer 20 px tussen de kaarten.
+    - Houd de middelste kaart gecentreerd en alle kaarten even groot.
+    - Laat de carrousel tot de randen van de sectie doorlopen.
+    - Snijd alleen de buitenste, gedeeltelijk zichtbare kaarten af binnen de carrousel. De pagina zelf mag nooit horizontaal kunnen scrollen.
+    - Laat de kaarten op grote schermen niet onbeperkt groeien; gebruik een instelbare maximale kaartbreedte van standaard ongeveer 360 px.
+    - Verplaats bij iedere klik één kaart.
+    
+    **5. Pijlen en stippen onderaan**
+    
+    Plaats onder de kaarten één gecentreerde navigatieregel:
+    
+    - Links een dunne zwarte pijl naar links.
+    - In het midden ronde navigatiestippen.
+    - Rechts een dunne zwarte pijl naar rechts.
+    
+    De pijlen moeten een lang, dun lijntje met een open pijlpunt hebben, zonder gekleurde achtergrond of rond knopvlak.
+    
+    De actieve stip is zwart gevuld. Overige stippen hebben alleen een dunne zwarte rand. Gebruik ongeveer 9 px grote stippen met nette tussenruimte.
+    
+    Laat het aantal stippen automatisch aansluiten op de beschikbare carrouselposities. Pijlen en stippen moeten echt werken en de actieve positie correct weergeven.
+    
+    Gebruik circa 28 px ruimte boven de navigatie en voldoende ruimte onderaan de sectie.
+    
+    **6. Mobiele weergave**
+    
+    Maak de mobiele versie compact en verzorgd:
+    
+    - Toon één centrale kaart met aan beide kanten een klein stukje van de aangrenzende kaart.
+    - Gebruik een kaartbreedte van ongeveer 84% van het scherm en 12 px tussenruimte.
+    - Houd de foto vierkant.
+    - Gebruik ongeveer 12 px binnenruimte in de kaart.
+    - Titel ongeveer 23 px, beoordelingsregel 17 px, reviewaantal 15 px en reviewtekst 15 px.
+    - Laat de titel indien nodig netjes over twee regels lopen.
+    - Houd de beoordelingsregel en sterren mooi gecentreerd. Als ze niet samen passen, plaats ze op twee gecentreerde regels.
+    - Behoud duidelijke witruimte zonder dat de sectie onnodig groot wordt.
+    - Maak horizontaal swipen mogelijk.
+    - Houd pijlen en stippen compact, met voldoende aanraakruimte.
+    - Voorkom horizontale pagina-overflow op kleine telefoons.
+    
+    Laat tablets vloeiend aansluiten tussen de mobiele en desktopweergave.
+    
+    **7. Alles bewerkbaar in de Shopify
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-review-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    background: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    padding: {{ block.settings.section_padding }}px 0;
+    font-family: {{ settings.type_base_font_family.family }}, {{ settings.type_base_font_family.fallback_families }};
+  }
+  .ai-review-{{ ai_gen_id }} * { box-sizing: border-box; }
+  .ai-review-{{ ai_gen_id }}__heading {
+    margin: 0 auto 20px;
+    padding: 0 16px;
+    max-width: 900px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: {{ settings.type_header_font_family.family }}, {{ settings.type_header_font_family.fallback_families }};
+    font-size: {{ block.settings.title_size }}px;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .ai-review-{{ ai_gen_id }}__summary { text-align: center; padding: 0 14px; }
+  .ai-review-{{ ai_gen_id }}__rating-line { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:8px; font-size:24px; line-height:1.3; }
+  .ai-review-{{ ai_gen_id }}__label, .ai-review-{{ ai_gen_id }}__score { font-weight:400; }
+  .ai-review-{{ ai_gen_id }}__count { margin-top:12px; font-size:20px; line-height:1.35; }
+  .ai-review-{{ ai_gen_id }}__stars { display:inline-flex; gap:2px; color:{{ block.settings.star_color }}; }
+  .ai-review-{{ ai_gen_id }}__star { display:block; width:1em; height:1em; flex:none; }
+  .ai-review-{{ ai_gen_id }}__track { fill:transparent; stroke:currentColor; stroke-width:1.5; }
+  .ai-review-{{ ai_gen_id }}__fill { fill:currentColor; }
+  .ai-review-{{ ai_gen_id }}__carousel { margin-top:26px; width:100%; overflow:hidden; touch-action:pan-y; }
+  .ai-review-{{ ai_gen_id }}__track-list {
+    display:flex; align-items:stretch; gap:20px; width:max-content;
+    position:relative; left:50%; transform:translateX(calc(-1 * (var(--review-index, 0) * (var(--card-width) + var(--card-gap)) + var(--card-width) / 2)));
+    transition:transform .35s ease;
+  }
+  .ai-review-{{ ai_gen_id }}__card {
+    flex:0 0 var(--card-width); width:var(--card-width); max-width:{{ block.settings.card_max_width }}px;
+    padding:14px; background:#fff; border:1px solid {{ block.settings.card_border_color }}; border-radius:12px;
+    display:flex; flex-direction:column; text-align:center;
+  }
+  .ai-review-{{ ai_gen_id }}__image-wrap { width:100%; aspect-ratio:1; overflow:hidden; border-radius:9px; background:#e8e8e8; }
+  .ai-review-{{ ai_gen_id }}__image-wrap img { width:100%; height:100%; display:block; object-fit:cover; }
+  .ai-review-{{ ai_gen_id }}__placeholder { height:100%; display:flex; align-items:center; justify-content:center; position:relative; color:#555; }
+  .ai-review-{{ ai_gen_id }}__placeholder svg { width:100%; height:100%; display:block; }
+  .ai-review-{{ ai_gen_id }}__empty { position:absolute; bottom:12px; font-size:13px; }
+  .ai-review-{{ ai_gen_id }}__card-stars { justify-content:center; margin-top:14px; font-size:20px; }
+  .ai-review-{{ ai_gen_id }}__body { margin:12px 4px 0; font-size:17px; line-height:1.45; font-weight:400; }
+  .ai-review-{{ ai_gen_id }}__byline { margin:10px 4px 0; font-size:14px; line-height:1.4; }
+  .ai-review-{{ ai_gen_id }}__nav { display:flex; align-items:center; justify-content:center; gap:30px; margin:28px auto 0; padding:4px 12px; }
+  .ai-review-{{ ai_gen_id }}__arrow { width:44px; height:44px; padding:10px; border:0; background:transparent; color:{{ block.settings.text_color }}; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .ai-review-{{ ai_gen_id }}__arrow svg { width:24px; height:16px; overflow:visible; }
+  .ai-review-{{ ai_gen_id }}__dots { display:flex; justify-content:center; align-items:center; gap:12px; }
+  .ai-review-{{ ai_gen_id }}__dot { width:9px; height:9px; padding:0; border-radius:50%; border:1px solid {{ block.settings.text_color }}; background:transparent; cursor:pointer; }
+  .ai-review-{{ ai_gen_id }}__dot[aria-current="true"] { background:{{ block.settings.text_color }}; }
+  .ai-review-{{ ai_gen_id }} button:focus-visible { outline:2px solid {{ block.settings.text_color }}; outline-offset:3px; }
+  @media (min-width: 750px) {
+    .ai-review-{{ ai_gen_id }}__card { --card-width: min({{ block.settings.card_max_width }}px, calc((100vw - 80px) / 3)); }
+    .ai-review-{{ ai_gen_id }}__track-list { --card-gap:20px; }
+  }
+  @media (max-width: 749px) {
+    .ai-review-{{ ai_gen_id }} { padding: {{ block.settings.mobile_padding }}px 0; }
+    .ai-review-{{ ai_gen_id }}__heading { font-size:23px; margin-bottom:17px; }
+    .ai-review-{{ ai_gen_id }}__rating-line { font-size:17px; gap:6px; }
+    .ai-review-{{ ai_gen_id }}__count { font-size:15px; margin-top:8px; }
+    .ai-review-{{ ai_gen_id }}__carousel { margin-top:20px; }
+    .ai-review-{{ ai_gen_id }}__track-list { --card-width:84vw; --card-gap:12px; }
+    .ai-review-{{ ai_gen_id }}__card { --card-width:84vw; padding:12px; }
+    .ai-review-{{ ai_gen_id }}__card-stars { font-size:17px; }
+    .ai-review-{{ ai_gen_id }}__body { font-size:15px; margin-top:10px; }
+    .ai-review-{{ ai_gen_id }}__byline { font-size:13px; }
+    .ai-review-{{ ai_gen_id }}__nav { gap:15px; margin-top:20px; }
+    .ai-review-{{ ai_gen_id }}__arrow { width:40px; height:40px; }
+    .ai-review-{{ ai_gen_id }}__dots { gap:9px; }
+  }
+{% endstyle %}
+
+<review-carousel-{{ ai_gen_id }} class="ai-review-{{ ai_gen_id }}" style="--review-index:0" data-block-id="{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.title != blank %}<h2 class="ai-review-{{ ai_gen_id }}__heading">{{ block.settings.title | escape }}</h2>{% endif %}
+  <div class="ai-review-{{ ai_gen_id }}__summary">
+    <div class="ai-review-{{ ai_gen_id }}__rating-line">
+      {% if block.settings.rating_label != blank %}<span class="ai-review-{{ ai_gen_id }}__label">{{ block.settings.rating_label | escape }}</span>{% endif %}
+      <span class="ai-review-{{ ai_gen_id }}__score">{{ block.settings.overall_score }}</span>
+      {% assign overall_percent = block.settings.overall_score | times: 20 %}
+      <span class="ai-review-{{ ai_gen_id }}__stars" aria-label="{{ block.settings.overall_score }} out of 5 stars">
+        {% for star in (1..5) %}{% assign threshold = forloop.index | times: 20 %}<svg class="ai-review-{{ ai_gen_id }}__star" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="overall-{{ ai_gen_id }}-{{ forloop.index }}"><rect x="0" y="0" width="{{ overall_percent }}%" height="24"/></clipPath></defs><path class="ai-review-{{ ai_gen_id }}__track" d="m12 2.2 3 6.1 6.7 1-4.9 4.8 1.2 6.7-6-3.2-6 3.2 1.2-6.7-4.9-4.8 6.7-1z"/><path class="ai-review-{{ ai_gen_id }}__fill" clip-path="url(#overall-{{ ai_gen_id }}-{{ forloop.index }})" d="m12 2.2 3 6.1 6.7 1-4.9 4.8 1.2 6.7-6-3.2-6 3.2 1.2-6.7-4.9-4.8 6.7-1z"/></svg>{% endfor %}
+      </span>
+    </div>
+    {% if block.settings.review_count != blank %}<div class="ai-review-{{ ai_gen_id }}__count">{{ block.settings.review_count | escape }}</div>{% endif %}
+  </div>
+  <div class="ai-review-{{ ai_gen_id }}__carousel" data-carousel tabindex="0" aria-label="Customer reviews">
+    <div class="ai-review-{{ ai_gen_id }}__track-list" data-track>
+      {% for i in (1..8) %}
+        {% liquid
+          assign enabled_key = 'review_' | append: i | append: '_enabled'
+          assign image_key = 'review_' | append: i | append: '_image'
+          assign focus_key = 'review_' | append: i | append: '_focus'
+          assign score_key = 'review_' | append: i | append: '_score'
+          assign text_key = 'review_' | append: i | append: '_text'
+          assign name_key = 'review_' | append: i | append: '_name'
+          assign location_key = 'review_' | append: i | append: '_location'
+          assign enabled = block.settings[enabled_key]
+          assign review_image = block.settings[image_key]
+          assign review_focus = block.settings[focus_key]
+          assign review_score = block.settings[score_key]
+          assign review_text = block.settings[text_key]
+          assign review_name = block.settings[name_key]
+          assign review_location = block.settings[location_key]
+          assign review_percent = review_score | times: 20
+        %}
+        {% if enabled %}
+          <article class="ai-review-{{ ai_gen_id }}__card" data-review-card>
+            <div class="ai-review-{{ ai_gen_id }}__image-wrap">
+              {% if review_image %}<img src="{{ review_image | image_url: width: 900 }}" alt="{{ review_image.alt | escape }}" loading="lazy" style="object-position:{{ review_focus }};" width="900" height="900">{% else %}<div class="ai-review-{{ ai_gen_id }}__placeholder">{{ 'image' | placeholder_svg_tag }}<span class="ai-review-{{ ai_gen_id }}__empty">Add a customer photo</span></div>{% endif %}
+            </div>
+            <div class="ai-review-{{ ai_gen_id }}__stars ai-review-{{ ai_gen_id }}__card-stars" aria-label="{{ review_score }} out of 5 stars">
+              {% for star in (1..5) %}<svg class="ai-review-{{ ai_gen_id }}__star" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="review-{{ ai_gen_id }}-{{ i }}-{{ forloop.index }}"><rect x="0" y="0" width="{{ review_percent }}%" height="24"/></clipPath></defs><path class="ai-review-{{ ai_gen_id }}__track" d="m12 2.2 3 6.1 6.7 1-4.9 4.8 1.2 6.7-6-3.2-6 3.2 1.2-6.7-4.9-4.8 6.7-1z"/><path class="ai-review-{{ ai_gen_id }}__fill" clip-path="url(#review-{{ ai_gen_id }}-{{ i }}-{{ forloop.index }})" d="m12 2.2 3 6.1 6.7 1-4.9 4.8 1.2 6.7-6-3.2-6 3.2 1.2-6.7-4.9-4.8 6.7-1z"/></svg>{% endfor %}
+            </div>
+            {% if review_text != blank %}<p class="ai-review-{{ ai_gen_id }}__body">{{ review_text | escape | newline_to_br }}</p>{% endif %}
+            {% if block.settings.show_byline and review_name != blank %}<div class="ai-review-{{ ai_gen_id }}__byline">{{ review_name | escape }}{% if review_location != blank %} · {{ review_location | escape }}{% endif %}</div>{% endif %}
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="ai-review-{{ ai_gen_id }}__nav" data-nav aria-label="Review carousel navigation">
+    <button class="ai-review-{{ ai_gen_id }}__arrow" type="button" data-prev aria-label="Previous reviews"><svg viewBox="0 0 32 16" fill="none" aria-hidden="true"><path d="M31 8H2m0 0 7-7M2 8l7 7" stroke="currentColor" stroke-width="1.2"/></svg></button>
+    <div class="ai-review-{{ ai_gen_id }}__dots" data-dots></div>
+    <button class="ai-review-{{ ai_gen_id }}__arrow" type="button" data-next aria-label="Next reviews"><svg viewBox="0 0 32 16" fill="none" aria-hidden="true"><path d="M1 8h29m0 0-7-7m7 7-7 7" stroke="currentColor" stroke-width="1.2"/></svg></button>
+  </div>
+</review-carousel-{{ ai_gen_id }}>
+
+<script>
+(function(){
+  const tag='review-carousel-{{ ai_gen_id }}';
+  if(customElements.get(tag)) return;
+  class ReviewCarousel extends HTMLElement {
+    connectedCallback(){
+      this.track=this.querySelector('[data-track]');
+      this.cards=Array.from(this.querySelectorAll('[data-review-card]'));
+      this.dots=this.querySelector('[data-dots]');
+      this.carousel=this.querySelector('[data-carousel]');
+      this.index=0;
+      if(!this.track||!this.cards.length){this.querySelector('[data-nav]').hidden=true;return;}
+      this.buildDots();
+      this.querySelector('[data-prev]').addEventListener('click',()=>this.go(this.index-1));
+      this.querySelector('[data-next]').addEventListener('click',()=>this.go(this.index+1));
+      this.dots.addEventListener('click',event=>{const dot=event.target.closest('[data-dot]');if(dot)this.go(Number(dot.dataset.dot));});
+      let startX=0;
+      this.carousel.addEventListener('touchstart',event=>{startX=event.changedTouches[0].clientX;},{passive:true});
+      this.carousel.addEventListener('touchend',event=>{const dx=event.changedTouches[0].clientX-startX;if(Math.abs(dx)>40)this.go(this.index+(dx<0?1:-1));},{passive:true});
+      this.carousel.addEventListener('keydown',event=>{if(event.key==='ArrowRight')this.go(this.index+1);if(event.key==='ArrowLeft')this.go(this.index-1);});
+      this.resizeObserver=new ResizeObserver(()=>this.update());this.resizeObserver.observe(this.carousel);
+      this.go(0);
+    }
+    buildDots(){this.dots.innerHTML='';this.cards.forEach((card,index)=>{const button=document.createElement('button');button.type='button';button.className='ai-review-{{ ai_gen_id }}__dot';button.dataset.dot=index;button.setAttribute('aria-label','Go to review '+(index+1));this.dots.appendChild(button);});}
+    go(index){this.index=Math.max(0,Math.min(index,this.cards.length-1));this.update();}
+    update(){
+      if(!this.cards.length)return;
+      const mobile=window.matchMedia('(max-width: 749px)').matches;
+      const gap=mobile?12:20;
+      const width=this.cards[0].getBoundingClientRect().width;
+      this.track.style.setProperty('--card-width',width+'px');
+      this.track.style.setProperty('--card-gap',gap+'px');
+      this.track.style.setProperty('--review-index',this.index);
+      this.dots.querySelectorAll('[data-dot]').forEach((dot,i)=>dot.setAttribute('aria-current',i===this.index?'true':'false'));
+      this.querySelector('[data-prev]').disabled=this.index===0;
+      this.querySelector('[data-next]').disabled=this.index===this.cards.length-1;
+      this.querySelector('[data-prev]').style.opacity=this.index===0?'.45':'1';
+      this.querySelector('[data-next]').style.opacity=this.index===this.cards.length-1?'.45':'1';
+    }
+  }
+  customElements.define(tag,ReviewCarousel);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Customer review carousel",
+  "tag": null,
+  "class": "customer-review-carousel-block",
+  "settings": [
+    {"type":"header","content":"Heading and rating"},
+    {"type":"text","id":"title","label":"Title","default":"Here’s what our customers say"},
+    {"type":"text","id":"rating_label","label":"Rating label","default":"Excellent"},
+    {"type":"range","id":"overall_score","label":"Overall score","min":0,"max":5,"step":0.1,"default":4.8},
+    {"type":"text","id":"review_count","label":"Review count"},
+    {"type":"header","content":"Colors and layout"},
+    {"type":"color","id":"background_color","label":"Section background","default":"#F2F2F2"},
+    {"type":"color","id":"text_color","label":"Text and navigation","default":"#000000"},
+    {"type":"color","id":"star_color","label":"Stars","default":"#FFD21C"},
+    {"type":"color","id":"card_border_color","label":"Card border","default":"#DEDEDE"},
+    {"type":"range","id":"desktop_width_percent","label":"Desktop width","min":50,"max":100,"step":5,"unit":"%","default":100},
+    {"type":"range","id":"card_max_width","label":"Maximum card width","min":240,"max":480,"step":20,"unit":"px","default":360},
+    {"type":"range","id":"title_size","label":"Title size","min":22,"max":42,"step":2,"unit":"px","default":32},
+    {"type":"range","id":"section_padding","label":"Desktop vertical padding","min":20,"max":100,"step":5,"unit":"px","default":50},
+    {"type":"range","id":"mobile_padding","label":"Mobile vertical padding","min":16,"max":60,"step":4,"unit":"px","default":28},
+    {"type":"checkbox","id":"show_byline","label":"Show customer name and location","default":false},
+    {"type":"header","content":"Review 1"},
+    {"type":"checkbox","id":"review_1_enabled","label":"Show review 1","default":true},
+    {"type":"image_picker","id":"review_1_image","label":"Customer photo"},
+    {"type":"select","id":"review_1_focus","label":"Photo crop position","options":[{"value":"center center","label":"Center"},{"value":"center top","label":"Top"},{"value":"center bottom","label":"Bottom"},{"value":"left center","label":"Left"},{"value":"right center","label":"Right"}],"default":"center center"},
+    {"type":"range","id":"review_1_score","label":"Star rating","min":0,"max":5,"step":0.1,"default":5},
+    {"type":"textarea","id":"review_1_text","label":"Review text"},
+    {"type":"text","id":"review_1_name","label":"Customer name"},
+    {"type":"text","id":"review_1_location","label":"Location"},
+    {"type":"header","content":"Review 2"},
+    {"type":"checkbox","id":"review_2_enabled","label":"Show review 2","default":true},
+    {"type":"image_picker","id":"review_2_image","label":"Customer photo"},
+    {"type":"select","id":"review_2_focus","label":"Photo crop position","options":[{"value":"center center","label":"Center"},{"value":"center top","label":"Top"},{"value":"center bottom","label":"Bottom"},{"value":"left center","label":"Left"},{"value":"right center","label":"Right"}],"default":"center center"},
+    {"type":"range","id":"review_2_score","label":"Star rating","min":0,"max":5,"step":0.1,"default":5},
+    {"type":"textarea","id":"review_2_text","label":"Review text"},
+    {"type":"text","id":"review_2_name","label":"Customer name"},
+    {"type":"text","id":"review_2_location","label":"Location"},
+    {"type":"header","content":"Review 3"},
+    {"type":"checkbox","id":"review_3_enabled","label":"Show review 3","default":true},
+    {"type":"image_picker","id":"review_3_image","label":"Customer photo"},
+    {"type":"select","id":"review_3_focus","label":"Photo crop position","options":[{"value":"center center","label":"Center"},{"value":"center top","label":"Top"},{"value":"center bottom","label":"Bottom"},{"value":"left center","label":"Left"},{"value":"right center","label":"Right"}],"default":"center center"},
+    {"type":"range","id":"review_3_score","label":"Star rating","min":0,"max":5,"step":0.1,"default":5},
+    {"type":"textarea","id":"review_3_text","label":"Review text"},
+    {"type":"text","id":"review_3_name","label":"Customer name"},
+    {"type":"text","id":"review_3_location","label":"Location"},
+    {"type":"header","content":"Review 4"},
+    {"type":"checkbox","id":"review_4_enabled","label":"Show review 4","default":true},
+    {"type":"image_picker","id":"review_4_image","label":"Customer photo"},
+    {"type":"select","id":"review_4_focus","label":"Photo crop position","options":[{"value":"center center","label":"Center"},{"value":"center top","label":"Top"},{"value":"center bottom","label":"Bottom"},{"value":"left center","label":"Left"},{"value":"right center","label":"Right"}],"default":"center center"},
+    {"type":"range","id":"review_4_score","label":"Star rating","min":0,"max":5,"step":0.1,"default":5},
+    {"type":"textarea","id":"review_4_text","label":"Review text"},
+    {"type":"text","id":"review_4_name","label":"Customer name"},
+    {"type":"text","id":"review_4_location","label":"Location"},
+    {"type":"header","content":"Review 5"},
+    {"type":"checkbox","id":"review_5_enabled","label":"Show review 5","default":true},
+    {"type":"image_picker","id":"review_5_image","label":"Customer photo"},
+    {"type":"select","id":"review_5_focus","label":"Photo crop position","options":[{"value":"center center","label":"Center"},{"value":"center top","label":"Top"},{"value":"center bottom","label":"Bottom"},{"value":"left center","label":"Left"},{"value":"right center","label":"Right"}],"default":"center center"},
+    {"type":"range","id":"review_5_score","label":"Star rating","min":0,"max":5,"step":0.1,"default":5},
+    {"type":"textarea","id":"review_5_text","label":"Review text"},
+    {"type":"text","id":"review_5_name","label":"Customer name"},
+    {"type":"text","id":"review_5_location","label":"Location"},
+    {"type":"header","content":"Review 6"},
+    {"type":"checkbox","id":"review_6_enabled","label":"Show review 6","default":true},
+    {"type":"image_picker","id":"review_6_image","label":"Customer photo"},
+    {"type":"select","id":"review_6_focus","label":"Photo crop position","options":[{"value":"center center","label":"Center"},{"value":"center top","label":"Top"},{"value":"center bottom","label":"Bottom"},{"value":"left center","label":"Left"},{"value":"right center","label":"Right"}],"default":"center center"},
+    {"type":"range","id":"review_6_score","label":"Star rating","min":0,"max":5,"step":0.1,"default":5},
+    {"type":"textarea","id":"review_6_text","label":"Review text"},
+    {"type":"text","id":"review_6_name","label":"Customer name"},
+    {"type":"text","id":"review_6_location","label":"Location"},
+    {"type":"header","content":"Review 7"},
+    {"type":"checkbox","id":"review_7_enabled","label":"Show review 7","default":true},
+    {"type":"image_picker","id":"review_7_image","label":"Customer photo"},
+    {"type":"select","id":"review_7_focus","label":"Photo crop position","options":[{"value":"center center","label":"Center"},{"value":"center top","label":"Top"},{"value":"center bottom","label":"Bottom"},{"value":"left center","label":"Left"},{"value":"right center","label":"Right"}],"default":"center center"},
+    {"type":"range","id":"review_7_score","label":"Star rating","min":0,"max":5,"step":0.1,"default":5},
+    {"type":"textarea","id":"review_7_text","label":"Review text"},
+    {"type":"text","id":"review_7_name","label":"Customer name"},
+    {"type":"text","id":"review_7_location","label":"Location"},
+    {"type":"header","content":"Review 8"},
+    {"type":"checkbox","id":"review_8_enabled","label":"Show review 8","default":true},
+    {"type":"image_picker","id":"review_8_image","label":"Customer photo"},
+    {"type":"select","id":"review_8_focus","label":"Photo crop position","options":[{"value":"center center","label":"Center"},{"value":"center top","label":"Top"},{"value":"center bottom","label":"Bottom"},{"value":"left center","label":"Left"},{"value":"right center","label":"Right"}],"default":"center center"},
+    {"type":"range","id":"review_8_score","label":"Star rating","min":0,"max":5,"step":0.1,"default":5},
+    {"type":"textarea","id":"review_8_text","label":"Review text"},
+    {"type":"text","id":"review_8_name","label":"Customer name"},
+    {"type":"text","id":"review_8_location","label":"Location"}
+  ],
+  "presets": [{"name":"Customer review carousel"}]
+}
+{% endschema %}
